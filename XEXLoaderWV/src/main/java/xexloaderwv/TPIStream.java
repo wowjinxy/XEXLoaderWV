@@ -144,15 +144,23 @@ public class TPIStream {
 			isBitField = isB;
 		}
 	}
+
+	private static class ImportSummary
+	{
+		long countEnums;
+		long countStructures;
+		long countArrays;
+		long countUnions;
+		long countClasses;
+		long countModifiers;
+		long skippedZeroLengthArrays;
+		long skippedMissingElementTypeArrays;
+		long skippedInvalidElementLengthArrays;
+		long skippedNonDivisibleArrays;
+	}
 	
 	public void ImportTypeRecords(Program program, TaskMonitor monitor) throws Exception
 	{
-		long countEnums = 0;
-		long countStructures = 0;
-		long countArrays = 0;
-		long countUnions = 0;
-		long countClasses = 0;
-		long countModifiers = 0;
 		DataTypeManager dtMan = program.getDataTypeManager();
 		monitor.setMaximum(typeRecords.size());
 		monitor.setMessage("Loading type records");
@@ -168,33 +176,28 @@ public class TPIStream {
 			switch(rec.kind)
 			{
 				case LF_ENUM:
-					if(AddEnumType((TypeRecord.LR_Enum)rec.record))
-						countEnums++;					
+					AddEnumType((TypeRecord.LR_Enum)rec.record);
 					break;
 				case LF_STRUCTURE:
-					if(AddStructureType((TypeRecord.LR_Structure)rec.record))
-						countStructures++;					
+					AddStructureType((TypeRecord.LR_Structure)rec.record);
 					break;
 				case LF_ARRAY:
-					if(AddArrayType((TypeRecord.LR_Array)rec.record))
-						countArrays++;
+					AddArrayType((TypeRecord.LR_Array)rec.record);
 					break;
 				case LF_UNION:
-					if(AddUnionType((TypeRecord.LR_Union)rec.record))
-						countUnions++;
+					AddUnionType((TypeRecord.LR_Union)rec.record);
 					break;
 				case LF_CLASS:
-					if(AddClassType((TypeRecord.LR_Class)rec.record))
-						countClasses++;	
+					AddClassType((TypeRecord.LR_Class)rec.record);
 					break;
 				case LF_MODIFIER:
-					if (AddModifierType((TypeRecord.LR_Modifier)rec.record))
-						countModifiers++;
+					AddModifierType((TypeRecord.LR_Modifier)rec.record);
 					break;
 				default:
 					break;
 			}
-		}		
+		}
+		RefineCompositeTypeSizes();
 		for(TypeRecord rec : typeRecords)
 			try
 			{
@@ -203,13 +206,131 @@ public class TPIStream {
 			} catch (Exception ex) {				
 				Log.error("Failed to add " + rec.record.dataType.getName() + ":" + ex.getMessage());
 			}
-	    Log.info(String.format("XEX Loader: Imported %d enums, %d structures, %d arrays, %d unions, %d classes, %d modifiers", 
-	    						countEnums, 
-	    						countStructures, 
-	    						countArrays, 
-	    						countUnions,
-	    						countClasses,
-								countModifiers));
+		ImportSummary summary = BuildImportSummary();
+		Log.info(String.format("XEX Loader: Imported %d enums, %d structures, %d arrays, %d unions, %d classes, %d modifiers",
+								summary.countEnums,
+								summary.countStructures,
+								summary.countArrays,
+								summary.countUnions,
+								summary.countClasses,
+								summary.countModifiers));
+		long skippedArrays = summary.skippedZeroLengthArrays +
+				summary.skippedMissingElementTypeArrays +
+				summary.skippedInvalidElementLengthArrays +
+				summary.skippedNonDivisibleArrays;
+		if(skippedArrays > 0)
+			Log.info(String.format("XEX Loader: Skipped %d arrays (%d zero-length, %d missing element types, %d invalid element sizes, %d non-divisible byte lengths)",
+					skippedArrays,
+					summary.skippedZeroLengthArrays,
+					summary.skippedMissingElementTypeArrays,
+					summary.skippedInvalidElementLengthArrays,
+					summary.skippedNonDivisibleArrays));
+	}
+
+	private void RefineCompositeTypeSizes()
+	{
+		// Array sizes depend on the finalized size of their element types. Rebuild arrays and then
+		// rebuild composites a few times so nested structs/unions/classes settle on the correct sizes.
+		for(int pass = 0; pass < 3; pass++)
+		{
+			for(TypeRecord rec : typeRecords)
+				if(rec.kind == LeafRecordKind.LF_ARRAY)
+					AddArrayType((TypeRecord.LR_Array)rec.record);
+
+			for(TypeRecord rec : typeRecords)
+				switch(rec.kind)
+				{
+					case LF_STRUCTURE:
+						AddStructureType((TypeRecord.LR_Structure)rec.record);
+						break;
+					case LF_UNION:
+						AddUnionType((TypeRecord.LR_Union)rec.record);
+						break;
+					case LF_CLASS:
+						AddClassType((TypeRecord.LR_Class)rec.record);
+						break;
+					default:
+						break;
+				}
+		}
+	}
+
+	private ImportSummary BuildImportSummary()
+	{
+		ImportSummary summary = new ImportSummary();
+		for(TypeRecord rec : typeRecords)
+		{
+			if(rec.record == null)
+				continue;
+			switch(rec.kind)
+			{
+				case LF_ENUM:
+					if(((TypeRecord.LR_Enum)rec.record).dataType != null)
+						summary.countEnums++;
+					break;
+				case LF_STRUCTURE:
+					if(((TypeRecord.LR_Structure)rec.record).dataType != null)
+						summary.countStructures++;
+					break;
+				case LF_ARRAY:
+					TypeRecord.LR_Array arr = (TypeRecord.LR_Array)rec.record;
+					if(arr.dataType != null)
+						summary.countArrays++;
+					else
+						ClassifySkippedArray(arr, summary);
+					break;
+				case LF_UNION:
+					if(((TypeRecord.LR_Union)rec.record).dataType != null)
+						summary.countUnions++;
+					break;
+				case LF_CLASS:
+					if(((TypeRecord.LR_Class)rec.record).dataType != null)
+						summary.countClasses++;
+					break;
+				case LF_MODIFIER:
+					if(((TypeRecord.LR_Modifier)rec.record).dataType != null)
+						summary.countModifiers++;
+					break;
+				default:
+					break;
+			}
+		}
+		return summary;
+	}
+
+	private void ClassifySkippedArray(TypeRecord.LR_Array arr, ImportSummary summary)
+	{
+		if(arr.val.val_long == 0)
+		{
+			summary.skippedZeroLengthArrays++;
+			return;
+		}
+		try
+		{
+			DataType dt = GetDataTypeByIndex(arr.elemtype);
+			if(dt == null)
+			{
+				summary.skippedMissingElementTypeArrays++;
+				return;
+			}
+			int elementLength = dt.getLength();
+			if(elementLength <= 0)
+			{
+				summary.skippedInvalidElementLengthArrays++;
+				return;
+			}
+			if((arr.val.val_long % elementLength) != 0)
+			{
+				summary.skippedNonDivisibleArrays++;
+				return;
+			}
+		}
+		catch (Exception ex)
+		{
+			summary.skippedMissingElementTypeArrays++;
+			return;
+		}
+		summary.skippedMissingElementTypeArrays++;
 	}
 	
 	private boolean AddClassType(TypeRecord.LR_Class clazz)
@@ -464,12 +585,20 @@ public class TPIStream {
 	{
 		try
 		{
+			arr.dataType = null;
 			DataType dt = GetDataTypeByIndex(arr.elemtype);
 			if(dt != null)
 			{
-				BinaryReader b = new BinaryReader(new ByteArrayProvider(arr.val.data), true);
-				int len = b.readUnsignedShort(0);
-				arr.dataType = new ArrayDataType(dt, len, 0);
+				int elementLength = dt.getLength();
+				if(elementLength <= 0)
+					return false;
+				long byteLength = arr.val.val_long;
+				if(byteLength <= 0 || (byteLength % elementLength) != 0)
+					return false;
+				long elementCount = byteLength / elementLength;
+				if(elementCount > Integer.MAX_VALUE)
+					return false;
+				arr.dataType = new ArrayDataType(dt, (int)elementCount, 0);
 				return true;
 			}
 			return false;
@@ -486,7 +615,7 @@ public class TPIStream {
 			if(rec.typeID == en.field)
 			{
 				TypeRecord.LR_FieldList fieldList = (TypeRecord.LR_FieldList)rec.record;
-				EnumDataType newEnum = new EnumDataType(en.name, 8);
+				EnumDataType newEnum = new EnumDataType(en.name, ResolveEnumStorageSize(en));
 				for(TypeRecord.MemberRecord m : fieldList.records)
 				{
 					TypeRecord.MR_Enumerate entry = (TypeRecord.MR_Enumerate)m;
@@ -496,6 +625,24 @@ public class TPIStream {
 				return true;
 			}
 		return false;
+	}
+
+	private int ResolveEnumStorageSize(TypeRecord.LR_Enum en)
+	{
+		int primitiveSize = CodeViewTypeInfo.getPrimitiveStorageSize(en.utype);
+		if(primitiveSize > 0)
+			return primitiveSize;
+
+		try
+		{
+			DataType dataType = GetDataTypeByIndex(en.utype);
+			if(dataType != null && dataType.getLength() > 0)
+				return dataType.getLength();
+		}
+		catch (Exception ex)
+		{
+		}
+		return 8;
 	}
 	
 	public LeafRecordKind GetTypeKind(long index)

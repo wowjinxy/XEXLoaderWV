@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.python.jline.internal.Log;
 
+import ghidra.app.cmd.disassemble.DisassembleCommand;
+import ghidra.app.cmd.function.CreateFunctionCmd;
 import ghidra.app.util.MemoryBlockUtils;
 import ghidra.app.util.Option;
 import ghidra.app.util.bin.BinaryReader;
@@ -397,14 +399,19 @@ public class XEXHeader {
 	public void ProcessPData(byte[] data, Program program, TaskMonitor monitor) throws Exception	
 	{
 		BinaryReader b = new BinaryReader(new ByteArrayProvider(data), false);
+		int created = 0;
 		for(int i = 0; i < data.length; i += 8)
 		{
 			int address = b.readInt(i);
 			Address addr = MakeAddress(address & 0xFFFFFFFFL);
 			if(addr != null)
+			{
 				SymbolUtilities.createPreferredLabelOrFunctionSymbol(program, addr, null, "Function_" + String.format("%08X", address), SourceType.ANALYSIS);
+				if(EnsureFunction(addr, program, monitor))
+					created++;
+			}
 		}
-		Log.info("XEX Loader: Loaded " + (data.length / 8) + " additional function symbols");
+		Log.info("XEX Loader: Loaded " + (data.length / 8) + " additional function symbols and defined " + created + " functions");
 	}
 	
 	public void ProcessPEImage(Program program, TaskMonitor monitor, MessageLog log, boolean ProcessPData) throws Exception
@@ -471,5 +478,33 @@ public class XEXHeader {
 	        }
 	    }
 	    return null;
+	}
+
+	private boolean EnsureFunction(Address addr, Program program, TaskMonitor monitor)
+	{
+		try
+		{
+			if(program.getFunctionManager().getFunctionAt(addr) != null)
+				return false;
+
+			if(program.getListing().getInstructionAt(addr) == null)
+			{
+				DisassembleCommand disassembleCmd = new DisassembleCommand(addr, null, true);
+				disassembleCmd.enableCodeAnalysis(false);
+				disassembleCmd.applyTo(program, monitor);
+			}
+
+			if(program.getListing().getInstructionAt(addr) == null)
+				return false;
+
+			CreateFunctionCmd createFunctionCmd = new CreateFunctionCmd(addr, false);
+			if(!createFunctionCmd.applyTo(program, monitor))
+				return false;
+			return program.getFunctionManager().getFunctionAt(addr) != null;
+		}
+		catch (Exception ex)
+		{
+			return false;
+		}
 	}
 }

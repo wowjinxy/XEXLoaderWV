@@ -60,9 +60,7 @@ public class PDBFile {
 		int pos;
 		pos = pAdIndexPages * dPageBytes;
 		ArrayList<Integer> pages = new ArrayList<Integer>();
-		int count = dRootBytes / dPageBytes;
-        if ((dRootBytes / dPageBytes) != 0)
-            count++;
+		int count = GetPageCount(dRootBytes);
 		for(int i = 0; i < count; i++)
 		{
 			int v = b.readInt(pos);
@@ -150,9 +148,7 @@ public class PDBFile {
 			try
 			{
 				RootStream rs = rootStreams.get(i);
-				int subcount = rs.size / dPageBytes;
-	            if ((rs.size % dPageBytes) != 0)
-	                subcount++;
+				int subcount = GetPageCount(rs.size);
 	            rs.pages = new int[subcount];
 	            for(int j = 0; j < subcount; j++)
 	            {
@@ -163,5 +159,15 @@ public class PDBFile {
 			}
 			catch(Exception e) {}
 		}
+	}
+
+	private int GetPageCount(int byteCount)
+	{
+		if(byteCount <= 0)
+			return 0;
+		int count = byteCount / dPageBytes;
+		if((byteCount % dPageBytes) != 0)
+			count++;
+		return count;
 	}
 }
