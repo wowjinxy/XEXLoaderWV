@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.python.jline.internal.Log;
 
 import ghidra.app.cmd.disassemble.DisassembleCommand;
 import ghidra.app.cmd.function.CreateFunctionCmd;
@@ -59,12 +58,12 @@ public class XEXHeader {
 			if((flags & (1 << i)) != 0)
 				flagList.add(flagNames[i]);
 		for(String flag : flagList)
-			Log.info("XEX Loader: Flag : " + flag);
+			Msg.info(this, "XEX Loader: Flag : " + flag);
 		offsetPE = b.readInt(8);
 		reserved = b.readInt(12);
 		offsetSecuInfo = b.readInt(16);
 		nOptHeader = b.readInt(20);
-		Log.info("XEX Loader: Loading optional headers");
+		Msg.info(this, "XEX Loader: Loading optional headers");
 		int pos = 24;
 		for(int i = 0; i < nOptHeader; i++)
 		{
@@ -89,11 +88,11 @@ public class XEXHeader {
 			}
 		}
 		ProcessOptionalHeaders();
-		Log.info("XEX Loader: Loading loader info");
+		Msg.info(this, "XEX Loader: Loading loader info");
 		loaderInfo = new XEXLoaderInfo(data, offsetSecuInfo);
 		loaderInfo.isDevKit = isDevKit;
 		DecryptFileKey();
-		Log.info("XEX Loader: Loading section info");
+		Msg.info(this, "XEX Loader: Loading section info");
 		int sectionCount = b.readInt(offsetSecuInfo + 0x180);
 		for(int i=0; i < sectionCount; i++)
 			sections.add(new XEXSection(data, offsetSecuInfo + (i * 24) + 0x184));
@@ -111,17 +110,17 @@ public class XEXHeader {
 		String s = "";
 		for(byte b : loaderInfo.fileKey)
 			s += String.format("%02X ", b);
-		Log.info("XEX Loader: File key    = " + s);	
+		Msg.info(this, "XEX Loader: File key    = " + s);	
 		sessionKey = Helper.AESDecrypt(key, loaderInfo.fileKey);
 		s = "";
 		for(byte b : sessionKey)
 			s += String.format("%02X ", b);
-		Log.info("XEX Loader: Session key = " + s);		
+		Msg.info(this, "XEX Loader: Session key = " + s);		
 	}
 	
 	public void ProcessOptionalHeaders() throws Exception
 	{
-		Log.info("XEX Loader: Processing section info");
+		Msg.info(this, "XEX Loader: Processing section info");
 		for(XEXOptionalHeader sec : optHeaders)
 		{
 			String s = "";
@@ -133,7 +132,7 @@ public class XEXHeader {
 				case 0x2:
 					for(int i = 4; i < 12; i++)
 						s += (char)b.readByte(i);
-					Log.info("XEX Loader: Ressource Info = " + s);
+					Msg.info(this, "XEX Loader: Ressource Info = " + s);
 					break;
 				case 0x3:
 					baseFileFormat = new BaseFileFormat(sec.data);				
@@ -149,15 +148,15 @@ public class XEXHeader {
 							break;
 						s += (char)test;
 					}
-					Log.info("XEX Loader: Bounding Path = " + s);
+					Msg.info(this, "XEX Loader: Bounding Path = " + s);
 					break;
 				case 0x101:					
 					entryPointAddress = b.readInt(0);
-					Log.info("XEX Loader: Entry point address = 0x" + String.format("%08X", entryPointAddress));
+					Msg.info(this, "XEX Loader: Entry point address = 0x" + String.format("%08X", entryPointAddress));
 					break;
 				case 0x102:
 					imageBaseAddress = b.readInt(0);
-					Log.info("XEX Loader: Imagebase address = 0x" + String.format("%08X", imageBaseAddress));
+					Msg.info(this, "XEX Loader: Imagebase address = 0x" + String.format("%08X", imageBaseAddress));
 					break;
 				case 0x103:
 					ReadImportLibraries(sec.data);
@@ -206,7 +205,7 @@ public class XEXHeader {
 				}
 			}
 			monitor.setProgress(0);
-			Log.info("XEX Loader: Loaded " + count + " pdb function symbols");	
+			Msg.info(this, "XEX Loader: Loaded " + count + " pdb function symbols");	
 		}
 	}
 	
@@ -266,7 +265,7 @@ public class XEXHeader {
 				}
 			}
 		}
-		Log.info("XEX Loader: Added import symbols(" + countImpl + " References, " + countThunk + " Thunks)");
+		Msg.info(this, "XEX Loader: Added import symbols(" + countImpl + " References, " + countThunk + " Thunks)");
 	}
 	
 	public void ReadStringTable(byte[] data, int start, int len) throws Exception
@@ -316,14 +315,14 @@ public class XEXHeader {
 	
 	public void ReadPEImage(byte[] data) throws Exception
 	{
-		Log.info("XEX Loader: Loading PE Image");
+		Msg.info(this, "XEX Loader: Loading PE Image");
 		int len = data.length - offsetPE;
 		byte[] compressed;
 		compressed = new byte[len];
 		for(int i = 0; i < len; i ++)
 			compressed[i] = data[offsetPE + i];
-		Log.info("XEX Loader: Encryption type = " + baseFileFormat.encryption);
-		Log.info("XEX Loader: Compression type = " + baseFileFormat.compression);		
+		Msg.info(this, "XEX Loader: Encryption type = " + baseFileFormat.encryption);
+		Msg.info(this, "XEX Loader: Compression type = " + baseFileFormat.compression);		
 		switch(baseFileFormat.encryption)
 		{
 			case 0:
@@ -332,7 +331,7 @@ public class XEXHeader {
 				String s = "";
 				for(byte b : sessionKey)
 					s += String.format("%02X ", b);
-				Log.info("XEX Loader: Decrypting using key    = " + s);	
+				Msg.info(this, "XEX Loader: Decrypting using key    = " + s);	
 				compressed = Helper.AESDecrypt(sessionKey, compressed);
 				break;
 			default:
@@ -411,12 +410,12 @@ public class XEXHeader {
 					created++;
 			}
 		}
-		Log.info("XEX Loader: Loaded " + (data.length / 8) + " additional function symbols and defined " + created + " functions");
+		Msg.info(this, "XEX Loader: Loaded " + (data.length / 8) + " additional function symbols and defined " + created + " functions");
 	}
 	
 	public void ProcessPEImage(Program program, TaskMonitor monitor, MessageLog log, boolean ProcessPData) throws Exception
 	{
-		Log.info("XEX Loader: Processing PE Image");
+		Msg.info(this, "XEX Loader: Processing PE Image");
 		DOSHeader dos = new DOSHeader(peImage);
 		NTHeader nt = new NTHeader(peImage, dos.e_lfanew);
 		byte[] pdata = null;
@@ -425,7 +424,7 @@ public class XEXHeader {
 			int address = sec.VirtualAddress;
 			address += imageBaseAddress;
 			int size = sec.PhysicalAddressOrVirtualSize;
-			Log.info("XEX Loader: Loading section " + sec.Name + " at 0x" + String.format("%08X", address) + " size = 0x" + String.format("%08X", size));			
+			Msg.info(this, "XEX Loader: Loading section " + sec.Name + " at 0x" + String.format("%08X", address) + " size = 0x" + String.format("%08X", size));			
 			byte[] data = new byte[size];
 			if( sec.VirtualAddress + size <= peImage.length)
 				for(int i = 0; i < size; i++)

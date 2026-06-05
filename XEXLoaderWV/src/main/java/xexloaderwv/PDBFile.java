@@ -6,11 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import org.python.jline.internal.Log;
-
 import ghidra.app.util.bin.BinaryReader;
 import ghidra.app.util.bin.ByteArrayProvider;
 import ghidra.program.model.listing.Program;
+import ghidra.util.Msg;
 import ghidra.util.task.TaskMonitor;
 
 public class PDBFile {
@@ -125,7 +124,7 @@ public class PDBFile {
 		catch (Exception e){}
 		monitor.setProgress(0);
 		bap.close();
-	    Log.info(String.format("XEX Loader: Processed %d symbols", symbols.size()));
+	    Msg.info(this, String.format("XEX Loader: Processed %d symbols", symbols.size()));
 	}
 	
 	

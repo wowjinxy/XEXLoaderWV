@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.python.jline.internal.Log;
+import ghidra.util.Msg;
 
 public class LzxDecompression {
 
@@ -178,7 +178,7 @@ public class LzxDecompression {
 		try {
 			lzx.decompress(in, output, uncompressedSize);
 		} catch (Exception e) {
-			Log.error(e.getMessage());
+			Msg.error(this, e.getMessage());
 		}
 		return output.toByteArray();
 	}

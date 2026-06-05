@@ -3,8 +3,6 @@ package xexloaderwv;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.python.jline.internal.Log;
-
 import ghidra.app.util.bin.BinaryReader;
 import ghidra.app.util.bin.ByteArrayProvider;
 import ghidra.program.model.data.ByteDataType;
@@ -23,6 +21,7 @@ import ghidra.program.model.data.StructureDataType;
 import ghidra.program.model.data.UnionDataType;
 import ghidra.program.model.data.ArrayDataType;
 import ghidra.program.model.listing.Program;
+import ghidra.util.Msg;
 import ghidra.util.task.TaskMonitor;
 import xexloaderwv.TypeRecord.BasicTypes;
 import xexloaderwv.TypeRecord.LR_Array;
@@ -124,7 +123,7 @@ public class TPIStream {
 	    	pos += size + 4;
 	    	typeID++;
 	    }
-	    Log.info(String.format("XEX Loader: Processed %d type records", typeRecords.size()));
+	    Msg.info(this, String.format("XEX Loader: Processed %d type records", typeRecords.size()));
 	}
 	
 	public class FieldMemberEntry
@@ -204,10 +203,10 @@ public class TPIStream {
 				if(rec.record != null && rec.record.dataType != null)
 					dtMan.addDataType(rec.record.dataType, DataTypeConflictHandler.DEFAULT_HANDLER);
 			} catch (Exception ex) {				
-				Log.error("Failed to add " + rec.record.dataType.getName() + ":" + ex.getMessage());
+				Msg.error(this, "Failed to add " + rec.record.dataType.getName() + ":" + ex.getMessage());
 			}
 		ImportSummary summary = BuildImportSummary();
-		Log.info(String.format("XEX Loader: Imported %d enums, %d structures, %d arrays, %d unions, %d classes, %d modifiers",
+		Msg.info(this, String.format("XEX Loader: Imported %d enums, %d structures, %d arrays, %d unions, %d classes, %d modifiers",
 								summary.countEnums,
 								summary.countStructures,
 								summary.countArrays,
@@ -219,7 +218,7 @@ public class TPIStream {
 				summary.skippedInvalidElementLengthArrays +
 				summary.skippedNonDivisibleArrays;
 		if(skippedArrays > 0)
-			Log.info(String.format("XEX Loader: Skipped %d arrays (%d zero-length, %d missing element types, %d invalid element sizes, %d non-divisible byte lengths)",
+			Msg.info(this, String.format("XEX Loader: Skipped %d arrays (%d zero-length, %d missing element types, %d invalid element sizes, %d non-divisible byte lengths)",
 					skippedArrays,
 					summary.skippedZeroLengthArrays,
 					summary.skippedMissingElementTypeArrays,

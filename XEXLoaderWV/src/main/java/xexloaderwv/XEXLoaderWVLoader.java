@@ -10,8 +10,6 @@ import java.util.List;
 
 import javax.swing.SwingConstants;
 
-import org.python.jline.internal.Log;
-
 import ghidra.app.plugin.core.analysis.AutoAnalysisManager;
 import ghidra.app.services.DataTypeManagerService;
 import ghidra.app.util.Option;
@@ -25,6 +23,7 @@ import ghidra.app.util.opinion.Loader.ImporterSettings;
 import ghidra.framework.model.DomainObject;
 import ghidra.program.model.lang.LanguageCompilerSpecPair;
 import ghidra.program.model.listing.Program;
+import ghidra.util.Msg;
 import ghidra.util.exception.CancelledException;
 import ghidra.util.task.TaskBuilder;
 import ghidra.util.task.TaskLauncher;
@@ -37,7 +36,7 @@ public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
 	@Override
 	public Collection<LoadSpec> findSupportedLoadSpecs(ByteProvider provider) throws IOException {
 		List<LoadSpec> loadSpecs = new ArrayList<>();
-		Log.info("XEX Loader: Checking Signature");
+		Msg.info(this, "XEX Loader: Checking Signature");
 		BinaryReader br = new BinaryReader(provider, false);
 		if (br.readInt(0) == 0x58455832)
 			loadSpecs.add(
@@ -59,14 +58,14 @@ public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
 	protected void load(ByteProvider provider, LoadSpec loadSpec, List<Option> options, Program program,
 			TaskMonitor monitor, MessageLog log) throws IOException {
 		try {
-			Log.info("XEX Loader: Trying to load as retail...");
+			Msg.info(this, "XEX Loader: Trying to load as retail...");
 			LoadXEX(provider, loadSpec, options, program, monitor, log, false);
 		} catch (Exception e) {
 			try {
-				Log.info("XEX Loader: Trying to load as dev kit...");
+				Msg.info(this, "XEX Loader: Trying to load as dev kit...");
 				LoadXEX(provider, loadSpec, options, program, monitor, log, true);
 			} catch (Exception e2) {
-				Log.info("XEX Loader: Failed to load");
+				Msg.info(this, "XEX Loader: Failed to load");
 				throw new IOException();
 			}
 		}
@@ -79,7 +78,7 @@ public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
 		if (!patchPath.equals(""))
 			buffROM = ApplyPatch(buffROM, patchPath, options, isDevKit);
 		ByteArrayProvider bapROM = new ByteArrayProvider(buffROM);
-		Log.info("XEX Loader: Loading header");
+		Msg.info(this, "XEX Loader: Loading header");
 		try {
 			XEXHeader h = new XEXHeader(buffROM, options, isDevKit);
 			boolean processPData = (boolean) options.get(0).getValue();
@@ -128,11 +127,11 @@ public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
 
 	public byte[] ApplyPatch(byte[] buffROM, String patchPath, List<Option> options, boolean isDevKit)
 			throws Exception {
-		Log.info("XEX Loader: Applying patch");
+		Msg.info(this, "XEX Loader: Applying patch");
 		byte[] buffPatch = Files.readAllBytes(Path.of(patchPath));
-		Log.info("XEX Loader: ### Loading Original XEX");
+		Msg.info(this, "XEX Loader: ### Loading Original XEX");
 		XEXHeader orgHeader = new XEXHeader(buffROM, options, isDevKit);
-		Log.info("XEX Loader: ### Loading Patch XEX");
+		Msg.info(this, "XEX Loader: ### Loading Patch XEX");
 		XEXHeader patchHeader = new XEXHeader(buffPatch, options, isDevKit);
 		if (patchHeader.baseFileFormat.compression == 3) {
 			XEXPatchDescriptor desc = patchHeader.patchDescriptor;
@@ -154,7 +153,7 @@ public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
 			for (int i = 0; i < orgHeader.peImage.length; i++)
 				temp[i + headerSize] = orgHeader.peImage[i];
 			buffROM = temp;
-			Log.info("XEX Loader: ### Loading XEX with patched header");
+			Msg.info(this, "XEX Loader: ### Loading XEX with patched header");
 			XEXHeader newHeader = new XEXHeader(buffROM, options, isDevKit);
 			byte[] newSessionKey = newHeader.sessionKey;
 			patchHeader.sessionKey = Helper.AESDecrypt(newSessionKey, patchHeader.loaderInfo.fileKey);
