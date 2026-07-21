@@ -1937,16 +1937,12 @@ define pcodeop stfdpOp;
 } 
 
 define pcodeop stvepxOp;
-:stvepx S,RA_OR_ZERO,B is OP=31 & S & RA_OR_ZERO & B & XOP_1_10=807 & BIT_0=0  {
-	EA:$(REGISTER_SIZE) = RA_OR_ZERO + B;
-	*[ram]:16 EA = stvepxOp(S, RA_OR_ZERO, B);
-} 
+# Xenon assigns this encoding to the Cell/AltiVec lvrxl instruction.  The
+# custom Xenon fallback supplies that constructor, so do not claim it here.
 
 define pcodeop stvepxlOp;
-:stvepxl S,RA_OR_ZERO,B is OP=31 & S & RA_OR_ZERO & B & XOP_1_10=775 & BIT_0=0  {
-	EA:$(REGISTER_SIZE) = RA_OR_ZERO + B;
-	*[ram]:16 EA = stvepxlOp(S, RA_OR_ZERO, B);
-} 
+# Xenon assigns this encoding to the Cell/AltiVec lvlxl instruction.  The
+# custom Xenon fallback supplies that constructor, so do not claim it here.
 
 # binutils-descr: "dquaq",	ZRC(63,3,0),	Z2_MASK,     POWER6,	PPCNONE,	{FRT, FRA, FRB, RMC}
 define pcodeop dquaqOp;

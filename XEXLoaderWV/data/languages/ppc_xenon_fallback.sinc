@@ -39,6 +39,41 @@ define pcodeop vector128StoreRight;
 	*[ram]:16 (tmp + 0x70) = zero;
 }
 
+# These standard AltiVec left/right partial-vector memory operations are used
+# by Xenon binaries but are not supplied by Ghidra's base AltiVec language.
+# Their LRU forms have the same data semantics as the non-LRU forms.
+:lvlx vrD,RA_OR_ZERO,B is OP=31 & vrD & RA_OR_ZERO & B & XOP_1_10=519 & Rc=0 {
+	vrD = vector128LoadLeft(RA_OR_ZERO,B);
+}
+
+:lvrx vrD,RA_OR_ZERO,B is OP=31 & vrD & RA_OR_ZERO & B & XOP_1_10=551 & Rc=0 {
+	vrD = vector128LoadRight(RA_OR_ZERO,B);
+}
+
+:stvlx vrS,RA_OR_ZERO,B is OP=31 & vrS & RA_OR_ZERO & B & XOP_1_10=647 & Rc=0 {
+	vector128StoreLeft(vrS,RA_OR_ZERO,B);
+}
+
+:stvrx vrS,RA_OR_ZERO,B is OP=31 & vrS & RA_OR_ZERO & B & XOP_1_10=679 & Rc=0 {
+	vector128StoreRight(vrS,RA_OR_ZERO,B);
+}
+
+:lvlxl vrD,RA_OR_ZERO,B is OP=31 & vrD & RA_OR_ZERO & B & XOP_1_10=775 & Rc=0 {
+	vrD = vector128LoadLeft(RA_OR_ZERO,B);
+}
+
+:lvrxl vrD,RA_OR_ZERO,B is OP=31 & vrD & RA_OR_ZERO & B & XOP_1_10=807 & Rc=0 {
+	vrD = vector128LoadRight(RA_OR_ZERO,B);
+}
+
+:stvlxl vrS,RA_OR_ZERO,B is OP=31 & vrS & RA_OR_ZERO & B & XOP_1_10=903 & Rc=0 {
+	vector128StoreLeft(vrS,RA_OR_ZERO,B);
+}
+
+:stvrxl vrS,RA_OR_ZERO,B is OP=31 & vrS & RA_OR_ZERO & B & XOP_1_10=935 & Rc=0 {
+	vector128StoreRight(vrS,RA_OR_ZERO,B);
+}
+
 # Primary opcodes 5 and 6 are Xenon VMX128 space.
 @include "ppc_xenon_vmx128.sinc"
 
