@@ -172,6 +172,19 @@ define register offset=0x4000 size=8 [
 # Altivec registers overlay the top 32 VSX registers. What we have to do is use a sub-table to display
 # the Altivec name, but export the matching VSX register. The original vrD, etc. tokens are now sub-tables.
 
+# Xbox 360 VMX128 extends the vector register file to 128 independent 128-bit
+# registers. These intentionally do not overlap the PowerISA VSX/AltiVec bank.
+define register offset=0x20000 size=16 [
+  xv0   xv1   xv2   xv3   xv4   xv5   xv6   xv7   xv8   xv9   xv10  xv11  xv12  xv13  xv14  xv15
+  xv16  xv17  xv18  xv19  xv20  xv21  xv22  xv23  xv24  xv25  xv26  xv27  xv28  xv29  xv30  xv31
+  xv32  xv33  xv34  xv35  xv36  xv37  xv38  xv39  xv40  xv41  xv42  xv43  xv44  xv45  xv46  xv47
+  xv48  xv49  xv50  xv51  xv52  xv53  xv54  xv55  xv56  xv57  xv58  xv59  xv60  xv61  xv62  xv63
+  xv64  xv65  xv66  xv67  xv68  xv69  xv70  xv71  xv72  xv73  xv74  xv75  xv76  xv77  xv78  xv79
+  xv80  xv81  xv82  xv83  xv84  xv85  xv86  xv87  xv88  xv89  xv90  xv91  xv92  xv93  xv94  xv95
+  xv96  xv97  xv98  xv99  xv100 xv101 xv102 xv103 xv104 xv105 xv106 xv107 xv108 xv109 xv110 xv111
+  xv112 xv113 xv114 xv115 xv116 xv117 xv118 xv119 xv120 xv121 xv122 xv123 xv124 xv125 xv126 xv127
+];
+
 # Altivec vector registers (accessed by vrD vrA vrB vrS vrC)
 # Altivec vector registers
 #define register offset=0x4200 size=16 [ 

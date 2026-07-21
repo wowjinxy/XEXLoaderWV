@@ -1,82 +1,121 @@
-# Xenon/Xbox 360 fallback decoders for A2ALT programs.
+# Xbox 360 Xenon extensions for A2ALT programs.
 #
-# These constructors keep analysis moving through XEX import thunk metadata and
-# the VMX128 vector opcodes observed in default.xex.  They intentionally use
-# opaque pcodeops until the full VMX128 semantics are modeled.
+# VMX128 has a 128-register vector file and three instruction encodings not
+# present in PowerISA. The ordinary vector operations reuse Ghidra's AltiVec
+# pcodeops; these cover the Xenon-specific operations and partial-vector IO.
 
-define pcodeop xenonVmx128Instruction;
 define pcodeop xexImportThunkWord;
+define pcodeop vector128MultiplyFloatingPoint;
+define pcodeop vector128MultiplySum3FloatingPoint;
+define pcodeop vector128MultiplySum4FloatingPoint;
+define pcodeop vector128PermuteWordImmediate;
+define pcodeop vector128PackD3D;
+define pcodeop vector128RotateLeftImmediateMaskInsert;
+define pcodeop vector128UnpackD3D;
+define pcodeop vector128UnpackHighSignedByte;
+define pcodeop vector128UnpackLowSignedByte;
+define pcodeop vector128LoadForShiftRight;
+define pcodeop vector128LoadLeft;
+define pcodeop vector128LoadRight;
+define pcodeop vector128StoreLeft;
+define pcodeop vector128StoreRight;
 
 # XEX import thunk metadata words commonly appear before mtctr/bctr stubs.
 :xex_import_word is OP=0 & D=8  { xexImportThunkWord(); }
 :xex_import_word is OP=0 & D=16 { xexImportThunkWord(); }
 
-# Primary opcodes 5 and 6 are Xenon VMX128 space in this language profile.
+# dcbz128 clears the 128-byte cache block containing RA+RB. It differs from
+# ordinary dcbz only by the reserved register field, which selects its size.
+:dcbz128 RA_OR_ZERO,B is OP=31 & D=1 & RA_OR_ZERO & B & XOP_1_10=1014 & BIT_0=0 {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xffffffffffffff80;
+	zero:16 = 0;
+	*[ram]:16 tmp = zero;
+	*[ram]:16 (tmp + 0x10) = zero;
+	*[ram]:16 (tmp + 0x20) = zero;
+	*[ram]:16 (tmp + 0x30) = zero;
+	*[ram]:16 (tmp + 0x40) = zero;
+	*[ram]:16 (tmp + 0x50) = zero;
+	*[ram]:16 (tmp + 0x60) = zero;
+	*[ram]:16 (tmp + 0x70) = zero;
+}
+
+# Primary opcodes 5 and 6 are Xenon VMX128 space.
 @include "ppc_xenon_vmx128.sinc"
 
-# Primary opcode 4 overlaps AltiVec, so keep the observed VMX128 forms exact.
-:xenon_vmx128_100020c3 is OP=4 & D=0 & A=0 & B=4 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_1000f8c3 is OP=4 & D=0 & A=0 & B=31 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_100a40c3 is OP=4 & D=0 & A=10 & B=8 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_116050c3 is OP=4 & D=11 & A=0 & B=10 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_116088c3 is OP=4 & D=11 & A=0 & B=17 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_118018c3 is OP=4 & D=12 & A=0 & B=3 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_118020c3 is OP=4 & D=12 & A=0 & B=4 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_118038c3 is OP=4 & D=12 & A=0 & B=7 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_11a050c3 is OP=4 & D=13 & A=0 & B=10 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_11aa48c3 is OP=4 & D=13 & A=10 & B=9 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_130b60cf is OP=4 & D=24 & A=11 & B=12 & C=3 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_130b61cf is OP=4 & D=24 & A=11 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_138b60cf is OP=4 & D=28 & A=11 & B=12 & C=3 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_138b61cf is OP=4 & D=28 & A=11 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13a021cf is OP=4 & D=29 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13a029c7 is OP=4 & D=29 & A=0 & B=5 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13a030c7 is OP=4 & D=29 & A=0 & B=6 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13a0e9c7 is OP=4 & D=29 & A=0 & B=29 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c021cf is OP=4 & D=30 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c039c7 is OP=4 & D=30 & A=0 & B=7 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c041c7 is OP=4 & D=30 & A=0 & B=8 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c049c7 is OP=4 & D=30 & A=0 & B=9 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c051c7 is OP=4 & D=30 & A=0 & B=10 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13c059c7 is OP=4 & D=30 & A=0 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e021c7 is OP=4 & D=31 & A=0 & B=4 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e021cf is OP=4 & D=31 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e029c7 is OP=4 & D=31 & A=0 & B=5 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e031c7 is OP=4 & D=31 & A=0 & B=6 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e039c7 is OP=4 & D=31 & A=0 & B=7 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e041c7 is OP=4 & D=31 & A=0 & B=8 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e049c7 is OP=4 & D=31 & A=0 & B=9 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e051c7 is OP=4 & D=31 & A=0 & B=10 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e059c7 is OP=4 & D=31 & A=0 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e0f1c7 is OP=4 & D=31 & A=0 & B=30 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e161cf is OP=4 & D=31 & A=1 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13e359c7 is OP=4 & D=31 & A=3 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+# VX128_1 vector loads and stores. The low two opcode bits and bits 4-10 are
+# fixed; bits 2-3 remain available as the high two bits of the destination.
+:lvsl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=0 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = loadVectorForShiftLeft(RA_OR_ZERO,B);
+}
 
-# Additional Xenon VMX128 forms found while following nearby flow.
-:xenon_vmx128_138021cf is OP=4 & D=28 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_136021cf is OP=4 & D=27 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_134021cf is OP=4 & D=26 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_132021cf is OP=4 & D=25 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_130021cf is OP=4 & D=24 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_12e021cf is OP=4 & D=23 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_12c021cf is OP=4 & D=22 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_12a021cf is OP=4 & D=21 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_128021cf is OP=4 & D=20 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_126021cf is OP=4 & D=19 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_124021cf is OP=4 & D=18 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_122021cf is OP=4 & D=17 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_120021cf is OP=4 & D=16 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_11e021cf is OP=4 & D=15 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_11c021cf is OP=4 & D=14 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_11a021cf is OP=4 & D=13 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_118021cf is OP=4 & D=12 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_116021cf is OP=4 & D=11 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_114021cf is OP=4 & D=10 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
-:xenon_vmx128_13a320c7 is OP=4 & D=29 & A=3 & B=4 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_11e951c3 is OP=4 & D=15 & A=9 & B=10 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_120049c3 is OP=4 & D=16 & A=0 & B=9 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_124041c3 is OP=4 & D=18 & A=0 & B=8 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
-:xenon_vmx128_134b50c7 is OP=4 & D=26 & A=11 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_12a320c7 is OP=4 & D=21 & A=3 & B=4 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_128350c7 is OP=4 & D=20 & A=3 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
-:xenon_vmx128_124b50c7 is OP=4 & D=18 & A=11 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:lvsr128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=4 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = vector128LoadForShiftRight(RA_OR_ZERO,B);
+}
+
+:lvewx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=8 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffff0;
+	vxD128 = *[ram]:16 tmp;
+}
+
+:lvx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=12 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffff0;
+	vxD128 = *[ram]:16 tmp;
+}
+
+:stvewx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=24 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffffc;
+	*[ram]:4 tmp = storeVectorElementWordIndexed(vxD128,RA_OR_ZERO,B);
+}
+
+:stvx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=28 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffff0;
+	*[ram]:16 tmp = vxD128;
+}
+
+:lvxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=44 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffff0;
+	vxD128 = *[ram]:16 tmp;
+}
+
+:stvxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=60 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	tmp:$(REGISTER_SIZE) = (RA_OR_ZERO + B) & 0xfffffffffffffff0;
+	*[ram]:16 tmp = vxD128;
+}
+
+:lvlx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=64 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = vector128LoadLeft(RA_OR_ZERO,B);
+}
+
+:lvrx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=68 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = vector128LoadRight(RA_OR_ZERO,B);
+}
+
+:stvlx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=80 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vector128StoreLeft(vxD128,RA_OR_ZERO,B);
+}
+
+:stvrx128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=84 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vector128StoreRight(vxD128,RA_OR_ZERO,B);
+}
+
+:lvlxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=96 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = vector128LoadLeft(RA_OR_ZERO,B);
+}
+
+:lvrxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=100 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vxD128 = vector128LoadRight(RA_OR_ZERO,B);
+}
+
+:stvlxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=112 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vector128StoreLeft(vxD128,RA_OR_ZERO,B);
+}
+
+:stvrxl128 vxD128,RA_OR_ZERO,B is OP=4 & BITS_4_10=116 & BITS_0_1=3 & vxD128 & RA_OR_ZERO & B {
+	vector128StoreRight(vxD128,RA_OR_ZERO,B);
+}
+
+# VX128_5 encodes vsldoi128. Native AltiVec instructions own their more
+# specific OP=4 patterns; this accepts the remaining Xenon form.
+:vsldoi128 vxD128,vxA128,vxB128,SHB is OP=4 & BIT_4=1 & vxD128 & vxA128 & vxB128 & SHB {
+	vxD128 = vectorShiftLeftDoubleByOctetImmediate(vxA128,vxB128,SHB:1);
+}
