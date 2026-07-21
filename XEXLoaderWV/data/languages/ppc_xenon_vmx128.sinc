@@ -1,0 +1,922 @@
+# Xbox 360 Xenon VMX128 disassembly constructors.
+# Mnemonics and decode masks mirror Xenia's generated VMX128 tables.
+# Semantics are intentionally opaque until full VMX128 pcode is modeled.
+
+vx128Rc: "" is BIT_6=0 { }
+vx128Rc: "." is BIT_6=1 { }
+
+vx128Z: "0" is BITS_6_7=0 { }
+vx128Z: "1" is BITS_6_7=1 { }
+vx128Z: "2" is BITS_6_7=2 { }
+vx128Z: "3" is BITS_6_7=3 { }
+
+# VMX128 register operands are 7-bit registers assembled from split opcode fields.
+vxD128: "vr0" is D=0 & BITS_2_3=0 { }
+vxD128: "vr1" is D=1 & BITS_2_3=0 { }
+vxD128: "vr2" is D=2 & BITS_2_3=0 { }
+vxD128: "vr3" is D=3 & BITS_2_3=0 { }
+vxD128: "vr4" is D=4 & BITS_2_3=0 { }
+vxD128: "vr5" is D=5 & BITS_2_3=0 { }
+vxD128: "vr6" is D=6 & BITS_2_3=0 { }
+vxD128: "vr7" is D=7 & BITS_2_3=0 { }
+vxD128: "vr8" is D=8 & BITS_2_3=0 { }
+vxD128: "vr9" is D=9 & BITS_2_3=0 { }
+vxD128: "vr10" is D=10 & BITS_2_3=0 { }
+vxD128: "vr11" is D=11 & BITS_2_3=0 { }
+vxD128: "vr12" is D=12 & BITS_2_3=0 { }
+vxD128: "vr13" is D=13 & BITS_2_3=0 { }
+vxD128: "vr14" is D=14 & BITS_2_3=0 { }
+vxD128: "vr15" is D=15 & BITS_2_3=0 { }
+vxD128: "vr16" is D=16 & BITS_2_3=0 { }
+vxD128: "vr17" is D=17 & BITS_2_3=0 { }
+vxD128: "vr18" is D=18 & BITS_2_3=0 { }
+vxD128: "vr19" is D=19 & BITS_2_3=0 { }
+vxD128: "vr20" is D=20 & BITS_2_3=0 { }
+vxD128: "vr21" is D=21 & BITS_2_3=0 { }
+vxD128: "vr22" is D=22 & BITS_2_3=0 { }
+vxD128: "vr23" is D=23 & BITS_2_3=0 { }
+vxD128: "vr24" is D=24 & BITS_2_3=0 { }
+vxD128: "vr25" is D=25 & BITS_2_3=0 { }
+vxD128: "vr26" is D=26 & BITS_2_3=0 { }
+vxD128: "vr27" is D=27 & BITS_2_3=0 { }
+vxD128: "vr28" is D=28 & BITS_2_3=0 { }
+vxD128: "vr29" is D=29 & BITS_2_3=0 { }
+vxD128: "vr30" is D=30 & BITS_2_3=0 { }
+vxD128: "vr31" is D=31 & BITS_2_3=0 { }
+vxD128: "vr32" is D=0 & BITS_2_3=1 { }
+vxD128: "vr33" is D=1 & BITS_2_3=1 { }
+vxD128: "vr34" is D=2 & BITS_2_3=1 { }
+vxD128: "vr35" is D=3 & BITS_2_3=1 { }
+vxD128: "vr36" is D=4 & BITS_2_3=1 { }
+vxD128: "vr37" is D=5 & BITS_2_3=1 { }
+vxD128: "vr38" is D=6 & BITS_2_3=1 { }
+vxD128: "vr39" is D=7 & BITS_2_3=1 { }
+vxD128: "vr40" is D=8 & BITS_2_3=1 { }
+vxD128: "vr41" is D=9 & BITS_2_3=1 { }
+vxD128: "vr42" is D=10 & BITS_2_3=1 { }
+vxD128: "vr43" is D=11 & BITS_2_3=1 { }
+vxD128: "vr44" is D=12 & BITS_2_3=1 { }
+vxD128: "vr45" is D=13 & BITS_2_3=1 { }
+vxD128: "vr46" is D=14 & BITS_2_3=1 { }
+vxD128: "vr47" is D=15 & BITS_2_3=1 { }
+vxD128: "vr48" is D=16 & BITS_2_3=1 { }
+vxD128: "vr49" is D=17 & BITS_2_3=1 { }
+vxD128: "vr50" is D=18 & BITS_2_3=1 { }
+vxD128: "vr51" is D=19 & BITS_2_3=1 { }
+vxD128: "vr52" is D=20 & BITS_2_3=1 { }
+vxD128: "vr53" is D=21 & BITS_2_3=1 { }
+vxD128: "vr54" is D=22 & BITS_2_3=1 { }
+vxD128: "vr55" is D=23 & BITS_2_3=1 { }
+vxD128: "vr56" is D=24 & BITS_2_3=1 { }
+vxD128: "vr57" is D=25 & BITS_2_3=1 { }
+vxD128: "vr58" is D=26 & BITS_2_3=1 { }
+vxD128: "vr59" is D=27 & BITS_2_3=1 { }
+vxD128: "vr60" is D=28 & BITS_2_3=1 { }
+vxD128: "vr61" is D=29 & BITS_2_3=1 { }
+vxD128: "vr62" is D=30 & BITS_2_3=1 { }
+vxD128: "vr63" is D=31 & BITS_2_3=1 { }
+vxD128: "vr64" is D=0 & BITS_2_3=2 { }
+vxD128: "vr65" is D=1 & BITS_2_3=2 { }
+vxD128: "vr66" is D=2 & BITS_2_3=2 { }
+vxD128: "vr67" is D=3 & BITS_2_3=2 { }
+vxD128: "vr68" is D=4 & BITS_2_3=2 { }
+vxD128: "vr69" is D=5 & BITS_2_3=2 { }
+vxD128: "vr70" is D=6 & BITS_2_3=2 { }
+vxD128: "vr71" is D=7 & BITS_2_3=2 { }
+vxD128: "vr72" is D=8 & BITS_2_3=2 { }
+vxD128: "vr73" is D=9 & BITS_2_3=2 { }
+vxD128: "vr74" is D=10 & BITS_2_3=2 { }
+vxD128: "vr75" is D=11 & BITS_2_3=2 { }
+vxD128: "vr76" is D=12 & BITS_2_3=2 { }
+vxD128: "vr77" is D=13 & BITS_2_3=2 { }
+vxD128: "vr78" is D=14 & BITS_2_3=2 { }
+vxD128: "vr79" is D=15 & BITS_2_3=2 { }
+vxD128: "vr80" is D=16 & BITS_2_3=2 { }
+vxD128: "vr81" is D=17 & BITS_2_3=2 { }
+vxD128: "vr82" is D=18 & BITS_2_3=2 { }
+vxD128: "vr83" is D=19 & BITS_2_3=2 { }
+vxD128: "vr84" is D=20 & BITS_2_3=2 { }
+vxD128: "vr85" is D=21 & BITS_2_3=2 { }
+vxD128: "vr86" is D=22 & BITS_2_3=2 { }
+vxD128: "vr87" is D=23 & BITS_2_3=2 { }
+vxD128: "vr88" is D=24 & BITS_2_3=2 { }
+vxD128: "vr89" is D=25 & BITS_2_3=2 { }
+vxD128: "vr90" is D=26 & BITS_2_3=2 { }
+vxD128: "vr91" is D=27 & BITS_2_3=2 { }
+vxD128: "vr92" is D=28 & BITS_2_3=2 { }
+vxD128: "vr93" is D=29 & BITS_2_3=2 { }
+vxD128: "vr94" is D=30 & BITS_2_3=2 { }
+vxD128: "vr95" is D=31 & BITS_2_3=2 { }
+vxD128: "vr96" is D=0 & BITS_2_3=3 { }
+vxD128: "vr97" is D=1 & BITS_2_3=3 { }
+vxD128: "vr98" is D=2 & BITS_2_3=3 { }
+vxD128: "vr99" is D=3 & BITS_2_3=3 { }
+vxD128: "vr100" is D=4 & BITS_2_3=3 { }
+vxD128: "vr101" is D=5 & BITS_2_3=3 { }
+vxD128: "vr102" is D=6 & BITS_2_3=3 { }
+vxD128: "vr103" is D=7 & BITS_2_3=3 { }
+vxD128: "vr104" is D=8 & BITS_2_3=3 { }
+vxD128: "vr105" is D=9 & BITS_2_3=3 { }
+vxD128: "vr106" is D=10 & BITS_2_3=3 { }
+vxD128: "vr107" is D=11 & BITS_2_3=3 { }
+vxD128: "vr108" is D=12 & BITS_2_3=3 { }
+vxD128: "vr109" is D=13 & BITS_2_3=3 { }
+vxD128: "vr110" is D=14 & BITS_2_3=3 { }
+vxD128: "vr111" is D=15 & BITS_2_3=3 { }
+vxD128: "vr112" is D=16 & BITS_2_3=3 { }
+vxD128: "vr113" is D=17 & BITS_2_3=3 { }
+vxD128: "vr114" is D=18 & BITS_2_3=3 { }
+vxD128: "vr115" is D=19 & BITS_2_3=3 { }
+vxD128: "vr116" is D=20 & BITS_2_3=3 { }
+vxD128: "vr117" is D=21 & BITS_2_3=3 { }
+vxD128: "vr118" is D=22 & BITS_2_3=3 { }
+vxD128: "vr119" is D=23 & BITS_2_3=3 { }
+vxD128: "vr120" is D=24 & BITS_2_3=3 { }
+vxD128: "vr121" is D=25 & BITS_2_3=3 { }
+vxD128: "vr122" is D=26 & BITS_2_3=3 { }
+vxD128: "vr123" is D=27 & BITS_2_3=3 { }
+vxD128: "vr124" is D=28 & BITS_2_3=3 { }
+vxD128: "vr125" is D=29 & BITS_2_3=3 { }
+vxD128: "vr126" is D=30 & BITS_2_3=3 { }
+vxD128: "vr127" is D=31 & BITS_2_3=3 { }
+
+vxD128r: "vr0" is D=0 & BITS_2_3=0 { }
+vxD128r: "vr1" is D=1 & BITS_2_3=0 { }
+vxD128r: "vr2" is D=2 & BITS_2_3=0 { }
+vxD128r: "vr3" is D=3 & BITS_2_3=0 { }
+vxD128r: "vr4" is D=4 & BITS_2_3=0 { }
+vxD128r: "vr5" is D=5 & BITS_2_3=0 { }
+vxD128r: "vr6" is D=6 & BITS_2_3=0 { }
+vxD128r: "vr7" is D=7 & BITS_2_3=0 { }
+vxD128r: "vr8" is D=8 & BITS_2_3=0 { }
+vxD128r: "vr9" is D=9 & BITS_2_3=0 { }
+vxD128r: "vr10" is D=10 & BITS_2_3=0 { }
+vxD128r: "vr11" is D=11 & BITS_2_3=0 { }
+vxD128r: "vr12" is D=12 & BITS_2_3=0 { }
+vxD128r: "vr13" is D=13 & BITS_2_3=0 { }
+vxD128r: "vr14" is D=14 & BITS_2_3=0 { }
+vxD128r: "vr15" is D=15 & BITS_2_3=0 { }
+vxD128r: "vr16" is D=16 & BITS_2_3=0 { }
+vxD128r: "vr17" is D=17 & BITS_2_3=0 { }
+vxD128r: "vr18" is D=18 & BITS_2_3=0 { }
+vxD128r: "vr19" is D=19 & BITS_2_3=0 { }
+vxD128r: "vr20" is D=20 & BITS_2_3=0 { }
+vxD128r: "vr21" is D=21 & BITS_2_3=0 { }
+vxD128r: "vr22" is D=22 & BITS_2_3=0 { }
+vxD128r: "vr23" is D=23 & BITS_2_3=0 { }
+vxD128r: "vr24" is D=24 & BITS_2_3=0 { }
+vxD128r: "vr25" is D=25 & BITS_2_3=0 { }
+vxD128r: "vr26" is D=26 & BITS_2_3=0 { }
+vxD128r: "vr27" is D=27 & BITS_2_3=0 { }
+vxD128r: "vr28" is D=28 & BITS_2_3=0 { }
+vxD128r: "vr29" is D=29 & BITS_2_3=0 { }
+vxD128r: "vr30" is D=30 & BITS_2_3=0 { }
+vxD128r: "vr31" is D=31 & BITS_2_3=0 { }
+vxD128r: "vr32" is D=0 & BITS_2_3=1 { }
+vxD128r: "vr33" is D=1 & BITS_2_3=1 { }
+vxD128r: "vr34" is D=2 & BITS_2_3=1 { }
+vxD128r: "vr35" is D=3 & BITS_2_3=1 { }
+vxD128r: "vr36" is D=4 & BITS_2_3=1 { }
+vxD128r: "vr37" is D=5 & BITS_2_3=1 { }
+vxD128r: "vr38" is D=6 & BITS_2_3=1 { }
+vxD128r: "vr39" is D=7 & BITS_2_3=1 { }
+vxD128r: "vr40" is D=8 & BITS_2_3=1 { }
+vxD128r: "vr41" is D=9 & BITS_2_3=1 { }
+vxD128r: "vr42" is D=10 & BITS_2_3=1 { }
+vxD128r: "vr43" is D=11 & BITS_2_3=1 { }
+vxD128r: "vr44" is D=12 & BITS_2_3=1 { }
+vxD128r: "vr45" is D=13 & BITS_2_3=1 { }
+vxD128r: "vr46" is D=14 & BITS_2_3=1 { }
+vxD128r: "vr47" is D=15 & BITS_2_3=1 { }
+vxD128r: "vr48" is D=16 & BITS_2_3=1 { }
+vxD128r: "vr49" is D=17 & BITS_2_3=1 { }
+vxD128r: "vr50" is D=18 & BITS_2_3=1 { }
+vxD128r: "vr51" is D=19 & BITS_2_3=1 { }
+vxD128r: "vr52" is D=20 & BITS_2_3=1 { }
+vxD128r: "vr53" is D=21 & BITS_2_3=1 { }
+vxD128r: "vr54" is D=22 & BITS_2_3=1 { }
+vxD128r: "vr55" is D=23 & BITS_2_3=1 { }
+vxD128r: "vr56" is D=24 & BITS_2_3=1 { }
+vxD128r: "vr57" is D=25 & BITS_2_3=1 { }
+vxD128r: "vr58" is D=26 & BITS_2_3=1 { }
+vxD128r: "vr59" is D=27 & BITS_2_3=1 { }
+vxD128r: "vr60" is D=28 & BITS_2_3=1 { }
+vxD128r: "vr61" is D=29 & BITS_2_3=1 { }
+vxD128r: "vr62" is D=30 & BITS_2_3=1 { }
+vxD128r: "vr63" is D=31 & BITS_2_3=1 { }
+vxD128r: "vr64" is D=0 & BITS_2_3=2 { }
+vxD128r: "vr65" is D=1 & BITS_2_3=2 { }
+vxD128r: "vr66" is D=2 & BITS_2_3=2 { }
+vxD128r: "vr67" is D=3 & BITS_2_3=2 { }
+vxD128r: "vr68" is D=4 & BITS_2_3=2 { }
+vxD128r: "vr69" is D=5 & BITS_2_3=2 { }
+vxD128r: "vr70" is D=6 & BITS_2_3=2 { }
+vxD128r: "vr71" is D=7 & BITS_2_3=2 { }
+vxD128r: "vr72" is D=8 & BITS_2_3=2 { }
+vxD128r: "vr73" is D=9 & BITS_2_3=2 { }
+vxD128r: "vr74" is D=10 & BITS_2_3=2 { }
+vxD128r: "vr75" is D=11 & BITS_2_3=2 { }
+vxD128r: "vr76" is D=12 & BITS_2_3=2 { }
+vxD128r: "vr77" is D=13 & BITS_2_3=2 { }
+vxD128r: "vr78" is D=14 & BITS_2_3=2 { }
+vxD128r: "vr79" is D=15 & BITS_2_3=2 { }
+vxD128r: "vr80" is D=16 & BITS_2_3=2 { }
+vxD128r: "vr81" is D=17 & BITS_2_3=2 { }
+vxD128r: "vr82" is D=18 & BITS_2_3=2 { }
+vxD128r: "vr83" is D=19 & BITS_2_3=2 { }
+vxD128r: "vr84" is D=20 & BITS_2_3=2 { }
+vxD128r: "vr85" is D=21 & BITS_2_3=2 { }
+vxD128r: "vr86" is D=22 & BITS_2_3=2 { }
+vxD128r: "vr87" is D=23 & BITS_2_3=2 { }
+vxD128r: "vr88" is D=24 & BITS_2_3=2 { }
+vxD128r: "vr89" is D=25 & BITS_2_3=2 { }
+vxD128r: "vr90" is D=26 & BITS_2_3=2 { }
+vxD128r: "vr91" is D=27 & BITS_2_3=2 { }
+vxD128r: "vr92" is D=28 & BITS_2_3=2 { }
+vxD128r: "vr93" is D=29 & BITS_2_3=2 { }
+vxD128r: "vr94" is D=30 & BITS_2_3=2 { }
+vxD128r: "vr95" is D=31 & BITS_2_3=2 { }
+vxD128r: "vr96" is D=0 & BITS_2_3=3 { }
+vxD128r: "vr97" is D=1 & BITS_2_3=3 { }
+vxD128r: "vr98" is D=2 & BITS_2_3=3 { }
+vxD128r: "vr99" is D=3 & BITS_2_3=3 { }
+vxD128r: "vr100" is D=4 & BITS_2_3=3 { }
+vxD128r: "vr101" is D=5 & BITS_2_3=3 { }
+vxD128r: "vr102" is D=6 & BITS_2_3=3 { }
+vxD128r: "vr103" is D=7 & BITS_2_3=3 { }
+vxD128r: "vr104" is D=8 & BITS_2_3=3 { }
+vxD128r: "vr105" is D=9 & BITS_2_3=3 { }
+vxD128r: "vr106" is D=10 & BITS_2_3=3 { }
+vxD128r: "vr107" is D=11 & BITS_2_3=3 { }
+vxD128r: "vr108" is D=12 & BITS_2_3=3 { }
+vxD128r: "vr109" is D=13 & BITS_2_3=3 { }
+vxD128r: "vr110" is D=14 & BITS_2_3=3 { }
+vxD128r: "vr111" is D=15 & BITS_2_3=3 { }
+vxD128r: "vr112" is D=16 & BITS_2_3=3 { }
+vxD128r: "vr113" is D=17 & BITS_2_3=3 { }
+vxD128r: "vr114" is D=18 & BITS_2_3=3 { }
+vxD128r: "vr115" is D=19 & BITS_2_3=3 { }
+vxD128r: "vr116" is D=20 & BITS_2_3=3 { }
+vxD128r: "vr117" is D=21 & BITS_2_3=3 { }
+vxD128r: "vr118" is D=22 & BITS_2_3=3 { }
+vxD128r: "vr119" is D=23 & BITS_2_3=3 { }
+vxD128r: "vr120" is D=24 & BITS_2_3=3 { }
+vxD128r: "vr121" is D=25 & BITS_2_3=3 { }
+vxD128r: "vr122" is D=26 & BITS_2_3=3 { }
+vxD128r: "vr123" is D=27 & BITS_2_3=3 { }
+vxD128r: "vr124" is D=28 & BITS_2_3=3 { }
+vxD128r: "vr125" is D=29 & BITS_2_3=3 { }
+vxD128r: "vr126" is D=30 & BITS_2_3=3 { }
+vxD128r: "vr127" is D=31 & BITS_2_3=3 { }
+
+vxB128: "vr0" is B=0 & BITS_0_1=0 { }
+vxB128: "vr1" is B=1 & BITS_0_1=0 { }
+vxB128: "vr2" is B=2 & BITS_0_1=0 { }
+vxB128: "vr3" is B=3 & BITS_0_1=0 { }
+vxB128: "vr4" is B=4 & BITS_0_1=0 { }
+vxB128: "vr5" is B=5 & BITS_0_1=0 { }
+vxB128: "vr6" is B=6 & BITS_0_1=0 { }
+vxB128: "vr7" is B=7 & BITS_0_1=0 { }
+vxB128: "vr8" is B=8 & BITS_0_1=0 { }
+vxB128: "vr9" is B=9 & BITS_0_1=0 { }
+vxB128: "vr10" is B=10 & BITS_0_1=0 { }
+vxB128: "vr11" is B=11 & BITS_0_1=0 { }
+vxB128: "vr12" is B=12 & BITS_0_1=0 { }
+vxB128: "vr13" is B=13 & BITS_0_1=0 { }
+vxB128: "vr14" is B=14 & BITS_0_1=0 { }
+vxB128: "vr15" is B=15 & BITS_0_1=0 { }
+vxB128: "vr16" is B=16 & BITS_0_1=0 { }
+vxB128: "vr17" is B=17 & BITS_0_1=0 { }
+vxB128: "vr18" is B=18 & BITS_0_1=0 { }
+vxB128: "vr19" is B=19 & BITS_0_1=0 { }
+vxB128: "vr20" is B=20 & BITS_0_1=0 { }
+vxB128: "vr21" is B=21 & BITS_0_1=0 { }
+vxB128: "vr22" is B=22 & BITS_0_1=0 { }
+vxB128: "vr23" is B=23 & BITS_0_1=0 { }
+vxB128: "vr24" is B=24 & BITS_0_1=0 { }
+vxB128: "vr25" is B=25 & BITS_0_1=0 { }
+vxB128: "vr26" is B=26 & BITS_0_1=0 { }
+vxB128: "vr27" is B=27 & BITS_0_1=0 { }
+vxB128: "vr28" is B=28 & BITS_0_1=0 { }
+vxB128: "vr29" is B=29 & BITS_0_1=0 { }
+vxB128: "vr30" is B=30 & BITS_0_1=0 { }
+vxB128: "vr31" is B=31 & BITS_0_1=0 { }
+vxB128: "vr32" is B=0 & BITS_0_1=1 { }
+vxB128: "vr33" is B=1 & BITS_0_1=1 { }
+vxB128: "vr34" is B=2 & BITS_0_1=1 { }
+vxB128: "vr35" is B=3 & BITS_0_1=1 { }
+vxB128: "vr36" is B=4 & BITS_0_1=1 { }
+vxB128: "vr37" is B=5 & BITS_0_1=1 { }
+vxB128: "vr38" is B=6 & BITS_0_1=1 { }
+vxB128: "vr39" is B=7 & BITS_0_1=1 { }
+vxB128: "vr40" is B=8 & BITS_0_1=1 { }
+vxB128: "vr41" is B=9 & BITS_0_1=1 { }
+vxB128: "vr42" is B=10 & BITS_0_1=1 { }
+vxB128: "vr43" is B=11 & BITS_0_1=1 { }
+vxB128: "vr44" is B=12 & BITS_0_1=1 { }
+vxB128: "vr45" is B=13 & BITS_0_1=1 { }
+vxB128: "vr46" is B=14 & BITS_0_1=1 { }
+vxB128: "vr47" is B=15 & BITS_0_1=1 { }
+vxB128: "vr48" is B=16 & BITS_0_1=1 { }
+vxB128: "vr49" is B=17 & BITS_0_1=1 { }
+vxB128: "vr50" is B=18 & BITS_0_1=1 { }
+vxB128: "vr51" is B=19 & BITS_0_1=1 { }
+vxB128: "vr52" is B=20 & BITS_0_1=1 { }
+vxB128: "vr53" is B=21 & BITS_0_1=1 { }
+vxB128: "vr54" is B=22 & BITS_0_1=1 { }
+vxB128: "vr55" is B=23 & BITS_0_1=1 { }
+vxB128: "vr56" is B=24 & BITS_0_1=1 { }
+vxB128: "vr57" is B=25 & BITS_0_1=1 { }
+vxB128: "vr58" is B=26 & BITS_0_1=1 { }
+vxB128: "vr59" is B=27 & BITS_0_1=1 { }
+vxB128: "vr60" is B=28 & BITS_0_1=1 { }
+vxB128: "vr61" is B=29 & BITS_0_1=1 { }
+vxB128: "vr62" is B=30 & BITS_0_1=1 { }
+vxB128: "vr63" is B=31 & BITS_0_1=1 { }
+vxB128: "vr64" is B=0 & BITS_0_1=2 { }
+vxB128: "vr65" is B=1 & BITS_0_1=2 { }
+vxB128: "vr66" is B=2 & BITS_0_1=2 { }
+vxB128: "vr67" is B=3 & BITS_0_1=2 { }
+vxB128: "vr68" is B=4 & BITS_0_1=2 { }
+vxB128: "vr69" is B=5 & BITS_0_1=2 { }
+vxB128: "vr70" is B=6 & BITS_0_1=2 { }
+vxB128: "vr71" is B=7 & BITS_0_1=2 { }
+vxB128: "vr72" is B=8 & BITS_0_1=2 { }
+vxB128: "vr73" is B=9 & BITS_0_1=2 { }
+vxB128: "vr74" is B=10 & BITS_0_1=2 { }
+vxB128: "vr75" is B=11 & BITS_0_1=2 { }
+vxB128: "vr76" is B=12 & BITS_0_1=2 { }
+vxB128: "vr77" is B=13 & BITS_0_1=2 { }
+vxB128: "vr78" is B=14 & BITS_0_1=2 { }
+vxB128: "vr79" is B=15 & BITS_0_1=2 { }
+vxB128: "vr80" is B=16 & BITS_0_1=2 { }
+vxB128: "vr81" is B=17 & BITS_0_1=2 { }
+vxB128: "vr82" is B=18 & BITS_0_1=2 { }
+vxB128: "vr83" is B=19 & BITS_0_1=2 { }
+vxB128: "vr84" is B=20 & BITS_0_1=2 { }
+vxB128: "vr85" is B=21 & BITS_0_1=2 { }
+vxB128: "vr86" is B=22 & BITS_0_1=2 { }
+vxB128: "vr87" is B=23 & BITS_0_1=2 { }
+vxB128: "vr88" is B=24 & BITS_0_1=2 { }
+vxB128: "vr89" is B=25 & BITS_0_1=2 { }
+vxB128: "vr90" is B=26 & BITS_0_1=2 { }
+vxB128: "vr91" is B=27 & BITS_0_1=2 { }
+vxB128: "vr92" is B=28 & BITS_0_1=2 { }
+vxB128: "vr93" is B=29 & BITS_0_1=2 { }
+vxB128: "vr94" is B=30 & BITS_0_1=2 { }
+vxB128: "vr95" is B=31 & BITS_0_1=2 { }
+vxB128: "vr96" is B=0 & BITS_0_1=3 { }
+vxB128: "vr97" is B=1 & BITS_0_1=3 { }
+vxB128: "vr98" is B=2 & BITS_0_1=3 { }
+vxB128: "vr99" is B=3 & BITS_0_1=3 { }
+vxB128: "vr100" is B=4 & BITS_0_1=3 { }
+vxB128: "vr101" is B=5 & BITS_0_1=3 { }
+vxB128: "vr102" is B=6 & BITS_0_1=3 { }
+vxB128: "vr103" is B=7 & BITS_0_1=3 { }
+vxB128: "vr104" is B=8 & BITS_0_1=3 { }
+vxB128: "vr105" is B=9 & BITS_0_1=3 { }
+vxB128: "vr106" is B=10 & BITS_0_1=3 { }
+vxB128: "vr107" is B=11 & BITS_0_1=3 { }
+vxB128: "vr108" is B=12 & BITS_0_1=3 { }
+vxB128: "vr109" is B=13 & BITS_0_1=3 { }
+vxB128: "vr110" is B=14 & BITS_0_1=3 { }
+vxB128: "vr111" is B=15 & BITS_0_1=3 { }
+vxB128: "vr112" is B=16 & BITS_0_1=3 { }
+vxB128: "vr113" is B=17 & BITS_0_1=3 { }
+vxB128: "vr114" is B=18 & BITS_0_1=3 { }
+vxB128: "vr115" is B=19 & BITS_0_1=3 { }
+vxB128: "vr116" is B=20 & BITS_0_1=3 { }
+vxB128: "vr117" is B=21 & BITS_0_1=3 { }
+vxB128: "vr118" is B=22 & BITS_0_1=3 { }
+vxB128: "vr119" is B=23 & BITS_0_1=3 { }
+vxB128: "vr120" is B=24 & BITS_0_1=3 { }
+vxB128: "vr121" is B=25 & BITS_0_1=3 { }
+vxB128: "vr122" is B=26 & BITS_0_1=3 { }
+vxB128: "vr123" is B=27 & BITS_0_1=3 { }
+vxB128: "vr124" is B=28 & BITS_0_1=3 { }
+vxB128: "vr125" is B=29 & BITS_0_1=3 { }
+vxB128: "vr126" is B=30 & BITS_0_1=3 { }
+vxB128: "vr127" is B=31 & BITS_0_1=3 { }
+
+vxA128: "vr0" is A=0 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr1" is A=1 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr2" is A=2 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr3" is A=3 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr4" is A=4 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr5" is A=5 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr6" is A=6 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr7" is A=7 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr8" is A=8 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr9" is A=9 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr10" is A=10 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr11" is A=11 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr12" is A=12 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr13" is A=13 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr14" is A=14 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr15" is A=15 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr16" is A=16 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr17" is A=17 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr18" is A=18 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr19" is A=19 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr20" is A=20 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr21" is A=21 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr22" is A=22 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr23" is A=23 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr24" is A=24 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr25" is A=25 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr26" is A=26 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr27" is A=27 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr28" is A=28 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr29" is A=29 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr30" is A=30 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr31" is A=31 & BIT_5=0 & BIT_10=0 { }
+vxA128: "vr32" is A=0 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr33" is A=1 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr34" is A=2 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr35" is A=3 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr36" is A=4 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr37" is A=5 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr38" is A=6 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr39" is A=7 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr40" is A=8 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr41" is A=9 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr42" is A=10 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr43" is A=11 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr44" is A=12 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr45" is A=13 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr46" is A=14 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr47" is A=15 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr48" is A=16 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr49" is A=17 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr50" is A=18 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr51" is A=19 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr52" is A=20 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr53" is A=21 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr54" is A=22 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr55" is A=23 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr56" is A=24 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr57" is A=25 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr58" is A=26 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr59" is A=27 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr60" is A=28 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr61" is A=29 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr62" is A=30 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr63" is A=31 & BIT_5=1 & BIT_10=0 { }
+vxA128: "vr64" is A=0 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr65" is A=1 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr66" is A=2 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr67" is A=3 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr68" is A=4 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr69" is A=5 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr70" is A=6 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr71" is A=7 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr72" is A=8 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr73" is A=9 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr74" is A=10 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr75" is A=11 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr76" is A=12 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr77" is A=13 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr78" is A=14 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr79" is A=15 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr80" is A=16 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr81" is A=17 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr82" is A=18 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr83" is A=19 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr84" is A=20 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr85" is A=21 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr86" is A=22 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr87" is A=23 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr88" is A=24 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr89" is A=25 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr90" is A=26 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr91" is A=27 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr92" is A=28 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr93" is A=29 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr94" is A=30 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr95" is A=31 & BIT_5=0 & BIT_10=1 { }
+vxA128: "vr96" is A=0 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr97" is A=1 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr98" is A=2 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr99" is A=3 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr100" is A=4 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr101" is A=5 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr102" is A=6 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr103" is A=7 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr104" is A=8 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr105" is A=9 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr106" is A=10 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr107" is A=11 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr108" is A=12 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr109" is A=13 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr110" is A=14 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr111" is A=15 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr112" is A=16 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr113" is A=17 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr114" is A=18 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr115" is A=19 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr116" is A=20 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr117" is A=21 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr118" is A=22 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr119" is A=23 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr120" is A=24 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr121" is A=25 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr122" is A=26 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr123" is A=27 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr124" is A=28 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr125" is A=29 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr126" is A=30 & BIT_5=1 & BIT_10=1 { }
+vxA128: "vr127" is A=31 & BIT_5=1 & BIT_10=1 { }
+
+vxVC128: "vr0" is BITS_6_8=0 { }
+vxVC128: "vr1" is BITS_6_8=1 { }
+vxVC128: "vr2" is BITS_6_8=2 { }
+vxVC128: "vr3" is BITS_6_8=3 { }
+vxVC128: "vr4" is BITS_6_8=4 { }
+vxVC128: "vr5" is BITS_6_8=5 { }
+vxVC128: "vr6" is BITS_6_8=6 { }
+vxVC128: "vr7" is BITS_6_8=7 { }
+
+vxU5: "0x0" is A_BITS=0 { }
+vxU5: "0x1" is A_BITS=1 { }
+vxU5: "0x2" is A_BITS=2 { }
+vxU5: "0x3" is A_BITS=3 { }
+vxU5: "0x4" is A_BITS=4 { }
+vxU5: "0x5" is A_BITS=5 { }
+vxU5: "0x6" is A_BITS=6 { }
+vxU5: "0x7" is A_BITS=7 { }
+vxU5: "0x8" is A_BITS=8 { }
+vxU5: "0x9" is A_BITS=9 { }
+vxU5: "0xA" is A_BITS=10 { }
+vxU5: "0xB" is A_BITS=11 { }
+vxU5: "0xC" is A_BITS=12 { }
+vxU5: "0xD" is A_BITS=13 { }
+vxU5: "0xE" is A_BITS=14 { }
+vxU5: "0xF" is A_BITS=15 { }
+vxU5: "0x10" is A_BITS=16 { }
+vxU5: "0x11" is A_BITS=17 { }
+vxU5: "0x12" is A_BITS=18 { }
+vxU5: "0x13" is A_BITS=19 { }
+vxU5: "0x14" is A_BITS=20 { }
+vxU5: "0x15" is A_BITS=21 { }
+vxU5: "0x16" is A_BITS=22 { }
+vxU5: "0x17" is A_BITS=23 { }
+vxU5: "0x18" is A_BITS=24 { }
+vxU5: "0x19" is A_BITS=25 { }
+vxU5: "0x1A" is A_BITS=26 { }
+vxU5: "0x1B" is A_BITS=27 { }
+vxU5: "0x1C" is A_BITS=28 { }
+vxU5: "0x1D" is A_BITS=29 { }
+vxU5: "0x1E" is A_BITS=30 { }
+vxU5: "0x1F" is A_BITS=31 { }
+
+vxS5: "0x0" is A_BITS=0 { }
+vxS5: "0x1" is A_BITS=1 { }
+vxS5: "0x2" is A_BITS=2 { }
+vxS5: "0x3" is A_BITS=3 { }
+vxS5: "0x4" is A_BITS=4 { }
+vxS5: "0x5" is A_BITS=5 { }
+vxS5: "0x6" is A_BITS=6 { }
+vxS5: "0x7" is A_BITS=7 { }
+vxS5: "0x8" is A_BITS=8 { }
+vxS5: "0x9" is A_BITS=9 { }
+vxS5: "0xA" is A_BITS=10 { }
+vxS5: "0xB" is A_BITS=11 { }
+vxS5: "0xC" is A_BITS=12 { }
+vxS5: "0xD" is A_BITS=13 { }
+vxS5: "0xE" is A_BITS=14 { }
+vxS5: "0xF" is A_BITS=15 { }
+vxS5: "-0x10" is A_BITS=16 { }
+vxS5: "-0xF" is A_BITS=17 { }
+vxS5: "-0xE" is A_BITS=18 { }
+vxS5: "-0xD" is A_BITS=19 { }
+vxS5: "-0xC" is A_BITS=20 { }
+vxS5: "-0xB" is A_BITS=21 { }
+vxS5: "-0xA" is A_BITS=22 { }
+vxS5: "-0x9" is A_BITS=23 { }
+vxS5: "-0x8" is A_BITS=24 { }
+vxS5: "-0x7" is A_BITS=25 { }
+vxS5: "-0x6" is A_BITS=26 { }
+vxS5: "-0x5" is A_BITS=27 { }
+vxS5: "-0x4" is A_BITS=28 { }
+vxS5: "-0x3" is A_BITS=29 { }
+vxS5: "-0x2" is A_BITS=30 { }
+vxS5: "-0x1" is A_BITS=31 { }
+
+vxPImm: "0x0" is A_BITS=0 & BITS_6_8=0 { }
+vxPImm: "0x1" is A_BITS=1 & BITS_6_8=0 { }
+vxPImm: "0x2" is A_BITS=2 & BITS_6_8=0 { }
+vxPImm: "0x3" is A_BITS=3 & BITS_6_8=0 { }
+vxPImm: "0x4" is A_BITS=4 & BITS_6_8=0 { }
+vxPImm: "0x5" is A_BITS=5 & BITS_6_8=0 { }
+vxPImm: "0x6" is A_BITS=6 & BITS_6_8=0 { }
+vxPImm: "0x7" is A_BITS=7 & BITS_6_8=0 { }
+vxPImm: "0x8" is A_BITS=8 & BITS_6_8=0 { }
+vxPImm: "0x9" is A_BITS=9 & BITS_6_8=0 { }
+vxPImm: "0xA" is A_BITS=10 & BITS_6_8=0 { }
+vxPImm: "0xB" is A_BITS=11 & BITS_6_8=0 { }
+vxPImm: "0xC" is A_BITS=12 & BITS_6_8=0 { }
+vxPImm: "0xD" is A_BITS=13 & BITS_6_8=0 { }
+vxPImm: "0xE" is A_BITS=14 & BITS_6_8=0 { }
+vxPImm: "0xF" is A_BITS=15 & BITS_6_8=0 { }
+vxPImm: "0x10" is A_BITS=16 & BITS_6_8=0 { }
+vxPImm: "0x11" is A_BITS=17 & BITS_6_8=0 { }
+vxPImm: "0x12" is A_BITS=18 & BITS_6_8=0 { }
+vxPImm: "0x13" is A_BITS=19 & BITS_6_8=0 { }
+vxPImm: "0x14" is A_BITS=20 & BITS_6_8=0 { }
+vxPImm: "0x15" is A_BITS=21 & BITS_6_8=0 { }
+vxPImm: "0x16" is A_BITS=22 & BITS_6_8=0 { }
+vxPImm: "0x17" is A_BITS=23 & BITS_6_8=0 { }
+vxPImm: "0x18" is A_BITS=24 & BITS_6_8=0 { }
+vxPImm: "0x19" is A_BITS=25 & BITS_6_8=0 { }
+vxPImm: "0x1A" is A_BITS=26 & BITS_6_8=0 { }
+vxPImm: "0x1B" is A_BITS=27 & BITS_6_8=0 { }
+vxPImm: "0x1C" is A_BITS=28 & BITS_6_8=0 { }
+vxPImm: "0x1D" is A_BITS=29 & BITS_6_8=0 { }
+vxPImm: "0x1E" is A_BITS=30 & BITS_6_8=0 { }
+vxPImm: "0x1F" is A_BITS=31 & BITS_6_8=0 { }
+vxPImm: "0x20" is A_BITS=0 & BITS_6_8=1 { }
+vxPImm: "0x21" is A_BITS=1 & BITS_6_8=1 { }
+vxPImm: "0x22" is A_BITS=2 & BITS_6_8=1 { }
+vxPImm: "0x23" is A_BITS=3 & BITS_6_8=1 { }
+vxPImm: "0x24" is A_BITS=4 & BITS_6_8=1 { }
+vxPImm: "0x25" is A_BITS=5 & BITS_6_8=1 { }
+vxPImm: "0x26" is A_BITS=6 & BITS_6_8=1 { }
+vxPImm: "0x27" is A_BITS=7 & BITS_6_8=1 { }
+vxPImm: "0x28" is A_BITS=8 & BITS_6_8=1 { }
+vxPImm: "0x29" is A_BITS=9 & BITS_6_8=1 { }
+vxPImm: "0x2A" is A_BITS=10 & BITS_6_8=1 { }
+vxPImm: "0x2B" is A_BITS=11 & BITS_6_8=1 { }
+vxPImm: "0x2C" is A_BITS=12 & BITS_6_8=1 { }
+vxPImm: "0x2D" is A_BITS=13 & BITS_6_8=1 { }
+vxPImm: "0x2E" is A_BITS=14 & BITS_6_8=1 { }
+vxPImm: "0x2F" is A_BITS=15 & BITS_6_8=1 { }
+vxPImm: "0x30" is A_BITS=16 & BITS_6_8=1 { }
+vxPImm: "0x31" is A_BITS=17 & BITS_6_8=1 { }
+vxPImm: "0x32" is A_BITS=18 & BITS_6_8=1 { }
+vxPImm: "0x33" is A_BITS=19 & BITS_6_8=1 { }
+vxPImm: "0x34" is A_BITS=20 & BITS_6_8=1 { }
+vxPImm: "0x35" is A_BITS=21 & BITS_6_8=1 { }
+vxPImm: "0x36" is A_BITS=22 & BITS_6_8=1 { }
+vxPImm: "0x37" is A_BITS=23 & BITS_6_8=1 { }
+vxPImm: "0x38" is A_BITS=24 & BITS_6_8=1 { }
+vxPImm: "0x39" is A_BITS=25 & BITS_6_8=1 { }
+vxPImm: "0x3A" is A_BITS=26 & BITS_6_8=1 { }
+vxPImm: "0x3B" is A_BITS=27 & BITS_6_8=1 { }
+vxPImm: "0x3C" is A_BITS=28 & BITS_6_8=1 { }
+vxPImm: "0x3D" is A_BITS=29 & BITS_6_8=1 { }
+vxPImm: "0x3E" is A_BITS=30 & BITS_6_8=1 { }
+vxPImm: "0x3F" is A_BITS=31 & BITS_6_8=1 { }
+vxPImm: "0x40" is A_BITS=0 & BITS_6_8=2 { }
+vxPImm: "0x41" is A_BITS=1 & BITS_6_8=2 { }
+vxPImm: "0x42" is A_BITS=2 & BITS_6_8=2 { }
+vxPImm: "0x43" is A_BITS=3 & BITS_6_8=2 { }
+vxPImm: "0x44" is A_BITS=4 & BITS_6_8=2 { }
+vxPImm: "0x45" is A_BITS=5 & BITS_6_8=2 { }
+vxPImm: "0x46" is A_BITS=6 & BITS_6_8=2 { }
+vxPImm: "0x47" is A_BITS=7 & BITS_6_8=2 { }
+vxPImm: "0x48" is A_BITS=8 & BITS_6_8=2 { }
+vxPImm: "0x49" is A_BITS=9 & BITS_6_8=2 { }
+vxPImm: "0x4A" is A_BITS=10 & BITS_6_8=2 { }
+vxPImm: "0x4B" is A_BITS=11 & BITS_6_8=2 { }
+vxPImm: "0x4C" is A_BITS=12 & BITS_6_8=2 { }
+vxPImm: "0x4D" is A_BITS=13 & BITS_6_8=2 { }
+vxPImm: "0x4E" is A_BITS=14 & BITS_6_8=2 { }
+vxPImm: "0x4F" is A_BITS=15 & BITS_6_8=2 { }
+vxPImm: "0x50" is A_BITS=16 & BITS_6_8=2 { }
+vxPImm: "0x51" is A_BITS=17 & BITS_6_8=2 { }
+vxPImm: "0x52" is A_BITS=18 & BITS_6_8=2 { }
+vxPImm: "0x53" is A_BITS=19 & BITS_6_8=2 { }
+vxPImm: "0x54" is A_BITS=20 & BITS_6_8=2 { }
+vxPImm: "0x55" is A_BITS=21 & BITS_6_8=2 { }
+vxPImm: "0x56" is A_BITS=22 & BITS_6_8=2 { }
+vxPImm: "0x57" is A_BITS=23 & BITS_6_8=2 { }
+vxPImm: "0x58" is A_BITS=24 & BITS_6_8=2 { }
+vxPImm: "0x59" is A_BITS=25 & BITS_6_8=2 { }
+vxPImm: "0x5A" is A_BITS=26 & BITS_6_8=2 { }
+vxPImm: "0x5B" is A_BITS=27 & BITS_6_8=2 { }
+vxPImm: "0x5C" is A_BITS=28 & BITS_6_8=2 { }
+vxPImm: "0x5D" is A_BITS=29 & BITS_6_8=2 { }
+vxPImm: "0x5E" is A_BITS=30 & BITS_6_8=2 { }
+vxPImm: "0x5F" is A_BITS=31 & BITS_6_8=2 { }
+vxPImm: "0x60" is A_BITS=0 & BITS_6_8=3 { }
+vxPImm: "0x61" is A_BITS=1 & BITS_6_8=3 { }
+vxPImm: "0x62" is A_BITS=2 & BITS_6_8=3 { }
+vxPImm: "0x63" is A_BITS=3 & BITS_6_8=3 { }
+vxPImm: "0x64" is A_BITS=4 & BITS_6_8=3 { }
+vxPImm: "0x65" is A_BITS=5 & BITS_6_8=3 { }
+vxPImm: "0x66" is A_BITS=6 & BITS_6_8=3 { }
+vxPImm: "0x67" is A_BITS=7 & BITS_6_8=3 { }
+vxPImm: "0x68" is A_BITS=8 & BITS_6_8=3 { }
+vxPImm: "0x69" is A_BITS=9 & BITS_6_8=3 { }
+vxPImm: "0x6A" is A_BITS=10 & BITS_6_8=3 { }
+vxPImm: "0x6B" is A_BITS=11 & BITS_6_8=3 { }
+vxPImm: "0x6C" is A_BITS=12 & BITS_6_8=3 { }
+vxPImm: "0x6D" is A_BITS=13 & BITS_6_8=3 { }
+vxPImm: "0x6E" is A_BITS=14 & BITS_6_8=3 { }
+vxPImm: "0x6F" is A_BITS=15 & BITS_6_8=3 { }
+vxPImm: "0x70" is A_BITS=16 & BITS_6_8=3 { }
+vxPImm: "0x71" is A_BITS=17 & BITS_6_8=3 { }
+vxPImm: "0x72" is A_BITS=18 & BITS_6_8=3 { }
+vxPImm: "0x73" is A_BITS=19 & BITS_6_8=3 { }
+vxPImm: "0x74" is A_BITS=20 & BITS_6_8=3 { }
+vxPImm: "0x75" is A_BITS=21 & BITS_6_8=3 { }
+vxPImm: "0x76" is A_BITS=22 & BITS_6_8=3 { }
+vxPImm: "0x77" is A_BITS=23 & BITS_6_8=3 { }
+vxPImm: "0x78" is A_BITS=24 & BITS_6_8=3 { }
+vxPImm: "0x79" is A_BITS=25 & BITS_6_8=3 { }
+vxPImm: "0x7A" is A_BITS=26 & BITS_6_8=3 { }
+vxPImm: "0x7B" is A_BITS=27 & BITS_6_8=3 { }
+vxPImm: "0x7C" is A_BITS=28 & BITS_6_8=3 { }
+vxPImm: "0x7D" is A_BITS=29 & BITS_6_8=3 { }
+vxPImm: "0x7E" is A_BITS=30 & BITS_6_8=3 { }
+vxPImm: "0x7F" is A_BITS=31 & BITS_6_8=3 { }
+vxPImm: "0x80" is A_BITS=0 & BITS_6_8=4 { }
+vxPImm: "0x81" is A_BITS=1 & BITS_6_8=4 { }
+vxPImm: "0x82" is A_BITS=2 & BITS_6_8=4 { }
+vxPImm: "0x83" is A_BITS=3 & BITS_6_8=4 { }
+vxPImm: "0x84" is A_BITS=4 & BITS_6_8=4 { }
+vxPImm: "0x85" is A_BITS=5 & BITS_6_8=4 { }
+vxPImm: "0x86" is A_BITS=6 & BITS_6_8=4 { }
+vxPImm: "0x87" is A_BITS=7 & BITS_6_8=4 { }
+vxPImm: "0x88" is A_BITS=8 & BITS_6_8=4 { }
+vxPImm: "0x89" is A_BITS=9 & BITS_6_8=4 { }
+vxPImm: "0x8A" is A_BITS=10 & BITS_6_8=4 { }
+vxPImm: "0x8B" is A_BITS=11 & BITS_6_8=4 { }
+vxPImm: "0x8C" is A_BITS=12 & BITS_6_8=4 { }
+vxPImm: "0x8D" is A_BITS=13 & BITS_6_8=4 { }
+vxPImm: "0x8E" is A_BITS=14 & BITS_6_8=4 { }
+vxPImm: "0x8F" is A_BITS=15 & BITS_6_8=4 { }
+vxPImm: "0x90" is A_BITS=16 & BITS_6_8=4 { }
+vxPImm: "0x91" is A_BITS=17 & BITS_6_8=4 { }
+vxPImm: "0x92" is A_BITS=18 & BITS_6_8=4 { }
+vxPImm: "0x93" is A_BITS=19 & BITS_6_8=4 { }
+vxPImm: "0x94" is A_BITS=20 & BITS_6_8=4 { }
+vxPImm: "0x95" is A_BITS=21 & BITS_6_8=4 { }
+vxPImm: "0x96" is A_BITS=22 & BITS_6_8=4 { }
+vxPImm: "0x97" is A_BITS=23 & BITS_6_8=4 { }
+vxPImm: "0x98" is A_BITS=24 & BITS_6_8=4 { }
+vxPImm: "0x99" is A_BITS=25 & BITS_6_8=4 { }
+vxPImm: "0x9A" is A_BITS=26 & BITS_6_8=4 { }
+vxPImm: "0x9B" is A_BITS=27 & BITS_6_8=4 { }
+vxPImm: "0x9C" is A_BITS=28 & BITS_6_8=4 { }
+vxPImm: "0x9D" is A_BITS=29 & BITS_6_8=4 { }
+vxPImm: "0x9E" is A_BITS=30 & BITS_6_8=4 { }
+vxPImm: "0x9F" is A_BITS=31 & BITS_6_8=4 { }
+vxPImm: "0xA0" is A_BITS=0 & BITS_6_8=5 { }
+vxPImm: "0xA1" is A_BITS=1 & BITS_6_8=5 { }
+vxPImm: "0xA2" is A_BITS=2 & BITS_6_8=5 { }
+vxPImm: "0xA3" is A_BITS=3 & BITS_6_8=5 { }
+vxPImm: "0xA4" is A_BITS=4 & BITS_6_8=5 { }
+vxPImm: "0xA5" is A_BITS=5 & BITS_6_8=5 { }
+vxPImm: "0xA6" is A_BITS=6 & BITS_6_8=5 { }
+vxPImm: "0xA7" is A_BITS=7 & BITS_6_8=5 { }
+vxPImm: "0xA8" is A_BITS=8 & BITS_6_8=5 { }
+vxPImm: "0xA9" is A_BITS=9 & BITS_6_8=5 { }
+vxPImm: "0xAA" is A_BITS=10 & BITS_6_8=5 { }
+vxPImm: "0xAB" is A_BITS=11 & BITS_6_8=5 { }
+vxPImm: "0xAC" is A_BITS=12 & BITS_6_8=5 { }
+vxPImm: "0xAD" is A_BITS=13 & BITS_6_8=5 { }
+vxPImm: "0xAE" is A_BITS=14 & BITS_6_8=5 { }
+vxPImm: "0xAF" is A_BITS=15 & BITS_6_8=5 { }
+vxPImm: "0xB0" is A_BITS=16 & BITS_6_8=5 { }
+vxPImm: "0xB1" is A_BITS=17 & BITS_6_8=5 { }
+vxPImm: "0xB2" is A_BITS=18 & BITS_6_8=5 { }
+vxPImm: "0xB3" is A_BITS=19 & BITS_6_8=5 { }
+vxPImm: "0xB4" is A_BITS=20 & BITS_6_8=5 { }
+vxPImm: "0xB5" is A_BITS=21 & BITS_6_8=5 { }
+vxPImm: "0xB6" is A_BITS=22 & BITS_6_8=5 { }
+vxPImm: "0xB7" is A_BITS=23 & BITS_6_8=5 { }
+vxPImm: "0xB8" is A_BITS=24 & BITS_6_8=5 { }
+vxPImm: "0xB9" is A_BITS=25 & BITS_6_8=5 { }
+vxPImm: "0xBA" is A_BITS=26 & BITS_6_8=5 { }
+vxPImm: "0xBB" is A_BITS=27 & BITS_6_8=5 { }
+vxPImm: "0xBC" is A_BITS=28 & BITS_6_8=5 { }
+vxPImm: "0xBD" is A_BITS=29 & BITS_6_8=5 { }
+vxPImm: "0xBE" is A_BITS=30 & BITS_6_8=5 { }
+vxPImm: "0xBF" is A_BITS=31 & BITS_6_8=5 { }
+vxPImm: "0xC0" is A_BITS=0 & BITS_6_8=6 { }
+vxPImm: "0xC1" is A_BITS=1 & BITS_6_8=6 { }
+vxPImm: "0xC2" is A_BITS=2 & BITS_6_8=6 { }
+vxPImm: "0xC3" is A_BITS=3 & BITS_6_8=6 { }
+vxPImm: "0xC4" is A_BITS=4 & BITS_6_8=6 { }
+vxPImm: "0xC5" is A_BITS=5 & BITS_6_8=6 { }
+vxPImm: "0xC6" is A_BITS=6 & BITS_6_8=6 { }
+vxPImm: "0xC7" is A_BITS=7 & BITS_6_8=6 { }
+vxPImm: "0xC8" is A_BITS=8 & BITS_6_8=6 { }
+vxPImm: "0xC9" is A_BITS=9 & BITS_6_8=6 { }
+vxPImm: "0xCA" is A_BITS=10 & BITS_6_8=6 { }
+vxPImm: "0xCB" is A_BITS=11 & BITS_6_8=6 { }
+vxPImm: "0xCC" is A_BITS=12 & BITS_6_8=6 { }
+vxPImm: "0xCD" is A_BITS=13 & BITS_6_8=6 { }
+vxPImm: "0xCE" is A_BITS=14 & BITS_6_8=6 { }
+vxPImm: "0xCF" is A_BITS=15 & BITS_6_8=6 { }
+vxPImm: "0xD0" is A_BITS=16 & BITS_6_8=6 { }
+vxPImm: "0xD1" is A_BITS=17 & BITS_6_8=6 { }
+vxPImm: "0xD2" is A_BITS=18 & BITS_6_8=6 { }
+vxPImm: "0xD3" is A_BITS=19 & BITS_6_8=6 { }
+vxPImm: "0xD4" is A_BITS=20 & BITS_6_8=6 { }
+vxPImm: "0xD5" is A_BITS=21 & BITS_6_8=6 { }
+vxPImm: "0xD6" is A_BITS=22 & BITS_6_8=6 { }
+vxPImm: "0xD7" is A_BITS=23 & BITS_6_8=6 { }
+vxPImm: "0xD8" is A_BITS=24 & BITS_6_8=6 { }
+vxPImm: "0xD9" is A_BITS=25 & BITS_6_8=6 { }
+vxPImm: "0xDA" is A_BITS=26 & BITS_6_8=6 { }
+vxPImm: "0xDB" is A_BITS=27 & BITS_6_8=6 { }
+vxPImm: "0xDC" is A_BITS=28 & BITS_6_8=6 { }
+vxPImm: "0xDD" is A_BITS=29 & BITS_6_8=6 { }
+vxPImm: "0xDE" is A_BITS=30 & BITS_6_8=6 { }
+vxPImm: "0xDF" is A_BITS=31 & BITS_6_8=6 { }
+vxPImm: "0xE0" is A_BITS=0 & BITS_6_8=7 { }
+vxPImm: "0xE1" is A_BITS=1 & BITS_6_8=7 { }
+vxPImm: "0xE2" is A_BITS=2 & BITS_6_8=7 { }
+vxPImm: "0xE3" is A_BITS=3 & BITS_6_8=7 { }
+vxPImm: "0xE4" is A_BITS=4 & BITS_6_8=7 { }
+vxPImm: "0xE5" is A_BITS=5 & BITS_6_8=7 { }
+vxPImm: "0xE6" is A_BITS=6 & BITS_6_8=7 { }
+vxPImm: "0xE7" is A_BITS=7 & BITS_6_8=7 { }
+vxPImm: "0xE8" is A_BITS=8 & BITS_6_8=7 { }
+vxPImm: "0xE9" is A_BITS=9 & BITS_6_8=7 { }
+vxPImm: "0xEA" is A_BITS=10 & BITS_6_8=7 { }
+vxPImm: "0xEB" is A_BITS=11 & BITS_6_8=7 { }
+vxPImm: "0xEC" is A_BITS=12 & BITS_6_8=7 { }
+vxPImm: "0xED" is A_BITS=13 & BITS_6_8=7 { }
+vxPImm: "0xEE" is A_BITS=14 & BITS_6_8=7 { }
+vxPImm: "0xEF" is A_BITS=15 & BITS_6_8=7 { }
+vxPImm: "0xF0" is A_BITS=16 & BITS_6_8=7 { }
+vxPImm: "0xF1" is A_BITS=17 & BITS_6_8=7 { }
+vxPImm: "0xF2" is A_BITS=18 & BITS_6_8=7 { }
+vxPImm: "0xF3" is A_BITS=19 & BITS_6_8=7 { }
+vxPImm: "0xF4" is A_BITS=20 & BITS_6_8=7 { }
+vxPImm: "0xF5" is A_BITS=21 & BITS_6_8=7 { }
+vxPImm: "0xF6" is A_BITS=22 & BITS_6_8=7 { }
+vxPImm: "0xF7" is A_BITS=23 & BITS_6_8=7 { }
+vxPImm: "0xF8" is A_BITS=24 & BITS_6_8=7 { }
+vxPImm: "0xF9" is A_BITS=25 & BITS_6_8=7 { }
+vxPImm: "0xFA" is A_BITS=26 & BITS_6_8=7 { }
+vxPImm: "0xFB" is A_BITS=27 & BITS_6_8=7 { }
+vxPImm: "0xFC" is A_BITS=28 & BITS_6_8=7 { }
+vxPImm: "0xFD" is A_BITS=29 & BITS_6_8=7 { }
+vxPImm: "0xFE" is A_BITS=30 & BITS_6_8=7 { }
+vxPImm: "0xFF" is A_BITS=31 & BITS_6_8=7 { }
+
+# OP=5 VMX128 instructions.
+:vperm128 vxD128,vxA128,vxB128,vxVC128 is OP=5 & BIT_9=0 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vxVC128 { xenonVmx128Instruction(); }
+:vaddfp128 vxD128,vxA128,vxB128 is OP=5 & SHB=0 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vsubfp128 vxD128,vxA128,vxB128 is OP=5 & SHB=1 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmulfp128 vxD128,vxA128,vxB128 is OP=5 & SHB=2 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmaddfp128 vxD128,vxA128,vxB128,vxD128r is OP=5 & SHB=3 & BIT_4=1 & vxD128 & vxA128 & vxB128 & vxD128r { xenonVmx128Instruction(); }
+:vmaddcfp128 vxD128,vxA128,vxD128r,vxB128 is OP=5 & SHB=4 & BIT_4=1 & vxD128 & vxA128 & vxB128 & vxD128r { xenonVmx128Instruction(); }
+:vnmsubfp128 vxD128,vxA128,vxD128r,vxB128 is OP=5 & SHB=5 & BIT_4=1 & vxD128 & vxA128 & vxB128 & vxD128r { xenonVmx128Instruction(); }
+:vmsum3fp128 vxD128,vxA128,vxB128 is OP=5 & SHB=6 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmsum4fp128 vxD128,vxA128,vxB128 is OP=5 & SHB=7 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkshss128 vxD128,vxA128,vxB128 is OP=5 & SHB=8 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vand128 vxD128,vxA128,vxB128 is OP=5 & SHB=8 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkshus128 vxD128,vxA128,vxB128 is OP=5 & SHB=9 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vandc128 vxD128,vxA128,vxB128 is OP=5 & SHB=9 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkswss128 vxD128,vxA128,vxB128 is OP=5 & SHB=10 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vnor128 vxD128,vxA128,vxB128 is OP=5 & SHB=10 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkswus128 vxD128,vxA128,vxB128 is OP=5 & SHB=11 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vor128 vxD128,vxA128,vxB128 is OP=5 & SHB=11 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkuhum128 vxD128,vxA128,vxB128 is OP=5 & SHB=12 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vxor128 vxD128,vxA128,vxB128 is OP=5 & SHB=12 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkuhus128 vxD128,vxA128,vxB128 is OP=5 & SHB=13 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vsel128 vxD128,vxA128,vxB128,vxD128r is OP=5 & SHB=13 & BIT_4=1 & vxD128 & vxA128 & vxB128 & vxD128r { xenonVmx128Instruction(); }
+:vpkuwum128 vxD128,vxA128,vxB128 is OP=5 & SHB=14 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vslo128 vxD128,vxA128,vxB128 is OP=5 & SHB=14 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vpkuwus128 vxD128,vxA128,vxB128 is OP=5 & SHB=15 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vsro128 vxD128,vxA128,vxB128 is OP=5 & SHB=15 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+
+# OP=6 VMX128 instructions.
+:vpermwi128 vxD128,vxB128,vxPImm is OP=6 & BITS_9_10=1 & BITS_4_5=1 & vxD128 & vxB128 & vxPImm { xenonVmx128Instruction(); }
+:vpkd3d128 vxD128,vxB128,vxU5,vx128Z is OP=6 & BITS_8_10=6 & BITS_4_5=1 & vxD128 & vxB128 & vxU5 & vx128Z { xenonVmx128Instruction(); }
+:vrlimi128 vxD128,vxB128,vxU5,vx128Z is OP=6 & BITS_8_10=7 & BITS_4_5=1 & vxD128 & vxB128 & vxU5 & vx128Z { xenonVmx128Instruction(); }
+:vcfpsxws128 vxD128,vxB128,vxU5 is OP=6 & XOP_4_10=35 & vxD128 & vxB128 & vxU5 { xenonVmx128Instruction(); }
+:vcfpuxws128 vxD128,vxB128,vxU5 is OP=6 & XOP_4_10=39 & vxD128 & vxB128 & vxU5 { xenonVmx128Instruction(); }
+:vcsxwfp128 vxD128,vxB128,vxU5 is OP=6 & XOP_4_10=43 & vxD128 & vxB128 & vxU5 { xenonVmx128Instruction(); }
+:vcuxwfp128 vxD128,vxB128,vxU5 is OP=6 & XOP_4_10=47 & vxD128 & vxB128 & vxU5 { xenonVmx128Instruction(); }
+:vspltw128 vxD128,vxB128,vxU5 is OP=6 & XOP_4_10=115 & vxD128 & vxB128 & vxU5 { xenonVmx128Instruction(); }
+:vspltisw128 vxD128,vxS5 is OP=6 & XOP_4_10=119 & vxD128 & vxS5 { xenonVmx128Instruction(); }
+:vrfim128 vxD128,vxB128 is OP=6 & XOP_4_10=51 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vrfin128 vxD128,vxB128 is OP=6 & XOP_4_10=55 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vrfip128 vxD128,vxB128 is OP=6 & XOP_4_10=59 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vrfiz128 vxD128,vxB128 is OP=6 & XOP_4_10=63 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vrefp128 vxD128,vxB128 is OP=6 & XOP_4_10=99 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vrsqrtefp128 vxD128,vxB128 is OP=6 & XOP_4_10=103 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vexptefp128 vxD128,vxB128 is OP=6 & XOP_4_10=107 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vlogefp128 vxD128,vxB128 is OP=6 & XOP_4_10=111 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vupkd3d128 vxD128,vxB128 is OP=6 & XOP_4_10=127 & vxD128 & vxB128 { xenonVmx128Instruction(); }
+:vcmpeqfp128^vx128Rc vxD128,vxA128,vxB128 is OP=6 & BITS_7_9=0 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vx128Rc { xenonVmx128Instruction(); }
+:vcmpgefp128^vx128Rc vxD128,vxA128,vxB128 is OP=6 & BITS_7_9=1 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vx128Rc { xenonVmx128Instruction(); }
+:vcmpgtfp128^vx128Rc vxD128,vxA128,vxB128 is OP=6 & BITS_7_9=2 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vx128Rc { xenonVmx128Instruction(); }
+:vcmpbfp128^vx128Rc vxD128,vxA128,vxB128 is OP=6 & BITS_7_9=3 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vx128Rc { xenonVmx128Instruction(); }
+:vcmpequw128^vx128Rc vxD128,vxA128,vxB128 is OP=6 & BITS_7_9=4 & BIT_4=0 & vxD128 & vxA128 & vxB128 & vx128Rc { xenonVmx128Instruction(); }
+:vrlw128 vxD128,vxA128,vxB128 is OP=6 & SHB=1 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vslw128 vxD128,vxA128,vxB128 is OP=6 & SHB=3 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vsraw128 vxD128,vxA128,vxB128 is OP=6 & SHB=5 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vsrw128 vxD128,vxA128,vxB128 is OP=6 & SHB=7 & BIT_4=1 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmaxfp128 vxD128,vxA128,vxB128 is OP=6 & SHB=10 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vminfp128 vxD128,vxA128,vxB128 is OP=6 & SHB=11 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmrghw128 vxD128,vxA128,vxB128 is OP=6 & SHB=12 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vmrglw128 vxD128,vxA128,vxB128 is OP=6 & SHB=13 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vupkhsb128 vxD128,vxA128,vxB128 is OP=6 & SHB=14 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
+:vupklsb128 vxD128,vxA128,vxB128 is OP=6 & SHB=15 & BIT_4=0 & vxD128 & vxA128 & vxB128 { xenonVmx128Instruction(); }
