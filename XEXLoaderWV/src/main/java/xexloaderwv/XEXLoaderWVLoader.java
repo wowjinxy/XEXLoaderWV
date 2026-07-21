@@ -32,15 +32,21 @@ import pdb.symbolserver.ui.LoadPdbDialog;
 import pdb.symbolserver.ui.LoadPdbDialog.LoadPdbResults;
 
 public class XEXLoaderWVLoader extends AbstractLibrarySupportLoader {
+	private static final String XENON_LANGUAGE_ID = "PowerPC:BE:64:Xenon-32addr";
+	private static final String XENON_COMPILER_SPEC_ID = "default";
+	private static final String STOCK_LANGUAGE_ID = "PowerPC:BE:64:A2ALT-32addr";
 
 	@Override
 	public Collection<LoadSpec> findSupportedLoadSpecs(ByteProvider provider) throws IOException {
 		List<LoadSpec> loadSpecs = new ArrayList<>();
 		Msg.info(this, "XEX Loader: Checking Signature");
 		BinaryReader br = new BinaryReader(provider, false);
-		if (br.readInt(0) == 0x58455832)
+		if (br.readInt(0) == 0x58455832) {
 			loadSpecs.add(
-					new LoadSpec(this, 0, new LanguageCompilerSpecPair("PowerPC:BE:64:A2ALT-32addr", "default"), true));
+					new LoadSpec(this, 0, new LanguageCompilerSpecPair(XENON_LANGUAGE_ID, XENON_COMPILER_SPEC_ID), true));
+			loadSpecs.add(
+					new LoadSpec(this, 0, new LanguageCompilerSpecPair(STOCK_LANGUAGE_ID, XENON_COMPILER_SPEC_ID), false));
+		}
 		return loadSpecs;
 	}
 

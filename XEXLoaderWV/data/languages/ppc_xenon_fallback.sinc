@@ -1,0 +1,140 @@
+# Xenon/Xbox 360 fallback decoders for A2ALT programs.
+#
+# These constructors keep analysis moving through XEX import thunk metadata and
+# the VMX128 vector opcodes observed in default.xex.  They intentionally use
+# opaque pcodeops until the full VMX128 semantics are modeled.
+
+define pcodeop xenonVmx128Instruction;
+define pcodeop xexImportThunkWord;
+
+# XEX import thunk metadata words commonly appear before mtctr/bctr stubs.
+:xex_import_word is OP=0 & D=8  { xexImportThunkWord(); }
+:xex_import_word is OP=0 & D=16 { xexImportThunkWord(); }
+
+# Primary opcodes 5 and 6 are Xenon VMX128 space in this language profile.
+# Keep these exact as well so the normal PPC language stays conservative.
+:xenon_vmx128_150e7af1 is OP=5 & D=8 & A=14 & B=15 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_151efaf1 is OP=5 & D=8 & A=30 & B=31 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_15200af1 is OP=5 & D=9 & A=0 & B=1 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_152a4af1 is OP=5 & D=9 & A=10 & B=9 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_1534aaf1 is OP=5 & D=9 & A=20 & B=21 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_153cdaf1 is OP=5 & D=9 & A=28 & B=27 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_159392f1 is OP=5 & D=12 & A=19 & B=18 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_159adaf1 is OP=5 & D=12 & A=26 & B=27 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_15b70330 is OP=5 & D=13 & A=23 & B=0 & C=12 & XOP_0_5=48 { xenonVmx128Instruction(); }
+:xenon_vmx128_15bf0330 is OP=5 & D=13 & A=31 & B=0 & C=12 & XOP_0_5=48 { xenonVmx128Instruction(); }
+:xenon_vmx128_1654aaf5 is OP=5 & D=18 & A=20 & B=21 & C=11 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_1719d2f5 is OP=5 & D=24 & A=25 & B=26 & C=11 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_171ff8b5 is OP=5 & D=24 & A=31 & B=31 & C=2 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_177ff9e5 is OP=5 & D=27 & A=31 & B=31 & C=7 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_17bdf8b5 is OP=5 & D=29 & A=29 & B=31 & C=2 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17befaf5 is OP=5 & D=29 & A=30 & B=31 & C=11 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ddf035 is OP=5 & D=30 & A=29 & B=30 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ded835 is OP=5 & D=30 & A=30 & B=27 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17dee035 is OP=5 & D=30 & A=30 & B=28 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17dee835 is OP=5 & D=30 & A=30 & B=29 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17def8b5 is OP=5 & D=30 & A=30 & B=31 & C=2 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17dff825 is OP=5 & D=30 & A=31 & B=31 & C=0 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fef835 is OP=5 & D=31 & A=30 & B=31 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fef875 is OP=5 & D=31 & A=30 & B=31 & C=1 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fef8b5 is OP=5 & D=31 & A=30 & B=31 & C=2 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ffe035 is OP=5 & D=31 & A=31 & B=28 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ffe835 is OP=5 & D=31 & A=31 & B=29 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fff035 is OP=5 & D=31 & A=31 & B=30 & C=0 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fff075 is OP=5 & D=31 & A=31 & B=30 & C=1 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fff0b5 is OP=5 & D=31 & A=31 & B=30 & C=2 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fff2f5 is OP=5 & D=31 & A=31 & B=30 & C=11 & XOP_0_5=53 { xenonVmx128Instruction(); }
+:xenon_vmx128_17fff825 is OP=5 & D=31 & A=31 & B=31 & C=0 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_17e002d4 is OP=5 & D=31 & A=0 & B=0 & C=11 & XOP_0_5=20 { xenonVmx128Instruction(); }
+:xenon_vmx128_1942ff31 is OP=6 & D=10 & A=2 & B=31 & C=28 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_1962ff31 is OP=6 & D=11 & A=2 & B=31 & C=28 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_19a0ff31 is OP=6 & D=13 & A=0 & B=31 & C=28 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bc00774 is OP=6 & D=30 & A=0 & B=0 & C=29 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bdf0774 is OP=6 & D=30 & A=31 & B=0 & C=29 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_1be00774 is OP=6 & D=31 & A=0 & B=0 & C=29 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bfef865 is OP=6 & D=31 & A=30 & B=31 & C=1 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bfef965 is OP=6 & D=31 & A=30 & B=31 & C=5 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bff0774 is OP=6 & D=31 & A=31 & B=0 & C=29 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bfff065 is OP=6 & D=31 & A=31 & B=30 & C=1 & XOP_0_5=37 { xenonVmx128Instruction(); }
+:xenon_vmx128_1bfff325 is OP=6 & D=31 & A=31 & B=30 & C=12 & XOP_0_5=37 { xenonVmx128Instruction(); }
+
+# Primary opcode 4 overlaps AltiVec, so keep the observed VMX128 forms exact.
+:xenon_vmx128_100020c3 is OP=4 & D=0 & A=0 & B=4 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_1000f8c3 is OP=4 & D=0 & A=0 & B=31 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_100a40c3 is OP=4 & D=0 & A=10 & B=8 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_116050c3 is OP=4 & D=11 & A=0 & B=10 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_116088c3 is OP=4 & D=11 & A=0 & B=17 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_118018c3 is OP=4 & D=12 & A=0 & B=3 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_118020c3 is OP=4 & D=12 & A=0 & B=4 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_118038c3 is OP=4 & D=12 & A=0 & B=7 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_11a050c3 is OP=4 & D=13 & A=0 & B=10 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_11aa48c3 is OP=4 & D=13 & A=10 & B=9 & C=3 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_130b60cf is OP=4 & D=24 & A=11 & B=12 & C=3 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_130b61cf is OP=4 & D=24 & A=11 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_138b60cf is OP=4 & D=28 & A=11 & B=12 & C=3 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_138b61cf is OP=4 & D=28 & A=11 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13a021cf is OP=4 & D=29 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13a029c7 is OP=4 & D=29 & A=0 & B=5 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13a030c7 is OP=4 & D=29 & A=0 & B=6 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13a0e9c7 is OP=4 & D=29 & A=0 & B=29 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c021cf is OP=4 & D=30 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c039c7 is OP=4 & D=30 & A=0 & B=7 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c041c7 is OP=4 & D=30 & A=0 & B=8 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c049c7 is OP=4 & D=30 & A=0 & B=9 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c051c7 is OP=4 & D=30 & A=0 & B=10 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13c059c7 is OP=4 & D=30 & A=0 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e021c7 is OP=4 & D=31 & A=0 & B=4 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e021cf is OP=4 & D=31 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e029c7 is OP=4 & D=31 & A=0 & B=5 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e031c7 is OP=4 & D=31 & A=0 & B=6 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e039c7 is OP=4 & D=31 & A=0 & B=7 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e041c7 is OP=4 & D=31 & A=0 & B=8 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e049c7 is OP=4 & D=31 & A=0 & B=9 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e051c7 is OP=4 & D=31 & A=0 & B=10 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e059c7 is OP=4 & D=31 & A=0 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e0f1c7 is OP=4 & D=31 & A=0 & B=30 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e161cf is OP=4 & D=31 & A=1 & B=12 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13e359c7 is OP=4 & D=31 & A=3 & B=11 & C=7 & XOP_0_5=7 { xenonVmx128Instruction(); }
+
+# Additional Xenon VMX128 forms found while following nearby flow.
+:xenon_vmx128_138021cf is OP=4 & D=28 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_136021cf is OP=4 & D=27 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_134021cf is OP=4 & D=26 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_132021cf is OP=4 & D=25 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_130021cf is OP=4 & D=24 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_12e021cf is OP=4 & D=23 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_12c021cf is OP=4 & D=22 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_12a021cf is OP=4 & D=21 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_128021cf is OP=4 & D=20 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_126021cf is OP=4 & D=19 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_124021cf is OP=4 & D=18 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_122021cf is OP=4 & D=17 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_120021cf is OP=4 & D=16 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_11e021cf is OP=4 & D=15 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_11c021cf is OP=4 & D=14 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_11a021cf is OP=4 & D=13 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_118021cf is OP=4 & D=12 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_116021cf is OP=4 & D=11 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_114021cf is OP=4 & D=10 & A=0 & B=4 & C=7 & XOP_0_5=15 { xenonVmx128Instruction(); }
+:xenon_vmx128_13a320c7 is OP=4 & D=29 & A=3 & B=4 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_11e951c3 is OP=4 & D=15 & A=9 & B=10 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_120049c3 is OP=4 & D=16 & A=0 & B=9 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_124041c3 is OP=4 & D=18 & A=0 & B=8 & C=7 & XOP_0_5=3 { xenonVmx128Instruction(); }
+:xenon_vmx128_17f9d161 is OP=5 & D=31 & A=25 & B=26 & C=5 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_1777c1e1 is OP=5 & D=27 & A=23 & B=24 & C=7 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_157ee1e1 is OP=5 & D=11 & A=30 & B=28 & C=7 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_155fe9e1 is OP=5 & D=10 & A=31 & B=29 & C=7 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_151dd9a1 is OP=5 & D=8 & A=29 & B=27 & C=6 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_14b19161 is OP=5 & D=5 & A=17 & B=18 & C=5 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_14af81e1 is OP=5 & D=5 & A=15 & B=16 & C=7 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_1536a2f1 is OP=5 & D=9 & A=22 & B=20 & C=11 & XOP_0_5=49 { xenonVmx128Instruction(); }
+:xenon_vmx128_15bff230 is OP=5 & D=13 & A=31 & B=30 & C=8 & XOP_0_5=48 { xenonVmx128Instruction(); }
+:xenon_vmx128_15df82f4 is OP=5 & D=14 & A=31 & B=16 & C=11 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ee7af4 is OP=5 & D=31 & A=14 & B=15 & C=11 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_17ff92f4 is OP=5 & D=31 & A=31 & B=18 & C=11 & XOP_0_5=52 { xenonVmx128Instruction(); }
+:xenon_vmx128_134b50c7 is OP=4 & D=26 & A=11 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_12a320c7 is OP=4 & D=21 & A=3 & B=4 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_128350c7 is OP=4 & D=20 & A=3 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }
+:xenon_vmx128_159599a1 is OP=5 & D=12 & A=21 & B=19 & C=6 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_1576a1e1 is OP=5 & D=11 & A=22 & B=20 & C=7 & XOP_0_5=33 { xenonVmx128Instruction(); }
+:xenon_vmx128_124b50c7 is OP=4 & D=18 & A=11 & B=10 & C=3 & XOP_0_5=7 { xenonVmx128Instruction(); }

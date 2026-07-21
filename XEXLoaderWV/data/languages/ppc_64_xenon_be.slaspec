@@ -1,0 +1,30 @@
+# SLA specification file for Xbox 360 Xenon PowerPC.
+#
+# This is the big-endian 64-bit PowerISA/A2+Altivec profile with 32-bit
+# addressing, plus Xbox 360 VMX128/XEX thunk fallback constructors.
+
+@define ENDIAN "big"
+
+@define IS_ISA "1"
+@define NoLegacyIntegerMultiplyAccumulate "1"
+
+@define REGISTER_SIZE "8"
+@define BIT_64 "64"
+
+@define EATRUNC "ea"
+
+@define CTR_OFFSET "32"
+
+@include "ppc_common.sinc"
+@include "ppc_isa.sinc"
+
+@include "ppc_a2.sinc"
+@include "quicciii.sinc"
+@include "FPRC.sinc"
+
+# A given processor can be compliant with the PowerISA spec by including EITHER
+# the embedded vector instructions (EVX) OR the AltiVec instructions.  The Xbox
+# 360 Xenon profile uses the AltiVec side plus VMX128 fallbacks below.
+@include "altivec.sinc"
+
+@include "ppc_xenon_fallback.sinc"

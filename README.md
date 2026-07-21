@@ -11,6 +11,7 @@ This fork carries maintained fixes and publishes ready-to-install release zips.
 - Fixed PDB root stream page counting so PDBs with sub-page root directories parse correctly.
 - Fixed CodeView `LF_ARRAY` imports so byte lengths are converted into the correct element counts.
 - Fixed `.pdata` handling so imported entries become real Ghidra functions instead of label-only symbols.
+- Added an Xbox 360 Xenon PowerPC language profile (`PowerPC:BE:64:Xenon-32addr`) with VMX128/XEX thunk fallback decoders, and made XEX imports prefer it over stock `A2ALT-32addr`.
 - Release zips for the fork are published on the [Releases](https://github.com/SaveEditors/XEXLoaderWV/releases) page.
 - The upstream patch was submitted as [zeroKilo/XEXLoaderWV#33](https://github.com/zeroKilo/XEXLoaderWV/pull/33).
 
@@ -21,6 +22,7 @@ This fork carries maintained fixes and publishes ready-to-install release zips.
   - Tick `Load PDB File` and `Use experimental PDB loader`, then untick `Process .pdata`.
   - Select `MSDIA` parser.
 - Supports XEXP delta patches.
+- Uses a bundled Xenon PowerPC language profile for XEX imports so unsupported Xbox 360 VMX128 words disassemble as opaque fallback instructions instead of creating bad-instruction gaps.
 
 Requires the minimum Java version required by your Ghidra install.
 
